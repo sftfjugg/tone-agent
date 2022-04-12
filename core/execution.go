@@ -22,7 +22,7 @@ func decodeScript(task constant.Task) string {
 	uDec, err := base64.StdEncoding.DecodeString(task.Script)
 	if err != nil {
 		log.Printf(
-			"[ExecCommand]task(tid: %s) script decode error failed error! error: %s",
+			"[ExecTask]task(tid: %s) script decode error failed error! error: %s",
 			task.Tid,
 			err,
 		)
@@ -49,7 +49,7 @@ func getExecCmd(script string, task constant.Task) string {
 		suc, _ := WriteFile(tmpShellName, []byte(script))
 		execCmd = fmt.Sprintf("sh %s %s", tmpShellName, task.Args)
 		log.Printf(
-			"[ExecCommand]task(tid: %s) script write to a temp file.success(%s) execCmd: %s",
+			"[ExecTask]task(tid: %s) script write to a temp file.success(%s) execCmd: %s",
 			task.Tid,
 			strconv.FormatBool(suc),
 			execCmd,
@@ -199,7 +199,7 @@ func getExecErrInfo(execErr error, task constant.Task) (string, string, string) 
 		}
 	}
 	log.Printf(
-		"[ExecCommand]task(tid: %s) script exec failed! detail: %s",
+		"[ExecTask]task(tid: %s) script exec failed! detail: %s",
 		task.Tid,
 		execErr.Error(),
 	)
@@ -236,7 +236,7 @@ func writeExecResult(
 		"finishTime": GetCurTimeStr(),
 	}
 	log.Printf(
-		"[ExecCommand]"+
+		"[ExecTask]"+
 			"task(tid: %s) begin to write exec result. errorCode:%s | errorMsg:%s",
 		task.Tid,
 		errorCode,
@@ -244,7 +244,7 @@ func writeExecResult(
 	)
 	WriteResult(resultMap, task.Sync)
 	log.Printf(
-		"[ExecCommand]"+
+		"[ExecTask]"+
 			"task(tid: %s) write exec result completed. errorCode:%s | errorMsg:%s | result:%s",
 		task.Tid,
 		errorCode,
@@ -253,7 +253,7 @@ func writeExecResult(
 	)
 }
 
-func ExecCommand(task constant.Task) (string, string, string, string, string) {
+func ExecTask(task constant.Task) (string, string, string, string, string) {
 	script := decodeScript(task)
 	execCmd := getExecCmd(script, task)
 	env := getEnv(task)
@@ -273,7 +273,7 @@ func ExecCommand(task constant.Task) (string, string, string, string, string) {
 	cmdErr := cmd.Start()
 	if cmdErr != nil {
 		log.Printf(
-			"[ExecCommand]cmd start failed!!!, cmd:%s | error:%s",
+			"[ExecTask]cmd start failed!!!, cmd:%s | error:%s",
 			execCmd,
 			cmdErr.Error(),
 		)
@@ -285,26 +285,26 @@ func ExecCommand(task constant.Task) (string, string, string, string, string) {
 		)
 	}
 	log.Printf(""+
-		"[ExecCommand]cmd start...., tid:%s | sync_type:%t | execCmd:%s",
+		"[ExecTask]cmd start...., tid:%s | sync_type:%t | execCmd:%s",
 		task.Tid,
 		task.Sync,
 		execCmd,
 	)
 	taskPid := cmd.Process.Pid
 	log.Printf(
-		"[ExecCommand]cmd process pid is %d | tid:%s | sync_type:%t",
+		"[ExecTask]cmd process pid is %d | tid:%s | sync_type:%t",
 		taskPid,
 		task.Tid,
 		task.Sync,
 	)
 	if task.Sync {
 		log.Printf(
-			"[ExecCommand]tid:%s | sync_type:sync without sync exec info",
+			"[ExecTask]tid:%s | sync_type:sync without sync exec info",
 			task.Tid,
 		)
 	} else {
 		log.Printf(
-			"[ExecCommand]tid:%s | sync_type:async begin to sync exec info",
+			"[ExecTask]tid:%s | sync_type:async begin to sync exec info",
 			task.Tid,
 		)
 		syncExecInfo(task, taskPid, script)
@@ -322,4 +322,19 @@ func ExecCommand(task constant.Task) (string, string, string, string, string) {
 
 	writeExecResult(task, taskPid, errorCode, errorMsg, result, exitCode)
 	return strconv.Itoa(taskPid), result, errorCode, errorMsg, exitCode
+}
+
+
+func ExecCommand(execCmd string) (string, ) {
+	var stdout, stderr bytes.Buffer
+	cmd := exec.Command("/bin/bash", "-c", execCmd)
+	cmd.Stdout = &stdout
+	cmd.Stderr = &stderr
+	err := cmd.Run()
+	outStr, errStr := string(stdout.Bytes()), string(stderr.Bytes())
+	if err != nil {
+		log.Printf("[ExecCommand]cmd run failed: %s | detail:%s \n", err, errStr)
+		return ""
+	}
+	return outStr
 }

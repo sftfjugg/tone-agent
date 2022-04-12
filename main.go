@@ -17,7 +17,6 @@ import (
 
 
 func main() {
-	fmt.Printf(core.GetSign())
 	viper.SetConfigType("yaml")
 	viper.SetConfigName("toneagent.config.yaml")
 	viper.AddConfigPath("/usr/local/toneagent/conf")

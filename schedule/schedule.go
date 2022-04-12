@@ -52,7 +52,8 @@ func pullTaskSchedule() error {
 			}
 		}
 	}else{
-		log.Printf("[pullTaskSchedule]pull task failed! pull task url: %s | status code: %d", pullTaskUrl, resp.StatusCode)
+		log.Printf("[pullTaskSchedule]pull task failed! pull task url: %s | status code: %d",
+			pullTaskUrl, resp.StatusCode)
 	}
 	defer resp.Body.Close()
 	return nil
@@ -79,10 +80,6 @@ func syncResultSchedule() error{
 				"finish_time": resultMap["finishTime"],
 			}
 			go core.SyncResultToProxy(updateData, false, true)
-		}else{
-			//if resultMap["tid"] != ""{
-				//log.Printf("[syncResultSchedule]task(tid:%s) is running...", resultMap["tid"])
-			//}
 		}
 	}
 		return nil
@@ -126,20 +123,28 @@ func revisedData() error{
 }
 
 func heartbeatSchedule() error{
-	hearbeatAPI :=core.GetProxyAPIUrl("HeartbeatApi")
+	hearbeatAPI := core.GetProxyAPIUrl("HeartbeatApi")
 	tsn := viper.GetString("tsn")
 	sign := core.GetSign()
-	hearbeatURL := fmt.Sprintf("%s?tsn=%s&sign=%s", hearbeatAPI, tsn, sign)
+	data := map[string] string {
+		"tsn": tsn,
+		"sign": sign,
+		"arch": core.ExecCommand("arch"),
+		"kernel": core.ExecCommand("uname -r"),
+		"distro": core.ExecCommand("cat /etc/os-release | grep -i id="),
+	}
+	jsonData, _ := json.Marshal(data)
 	client := core.GetHttpClient()
-	resp, err := client.Get(hearbeatURL)
+	resp, err := client.Post(hearbeatAPI,"application/json", bytes.NewBuffer(jsonData))
 
 	if err != nil {
-		log.Printf("[heartbeatSchedule]Hearbeat info sync error, url:%s | error:%s", hearbeatURL, err.Error())
+		log.Printf("[heartbeatSchedule]Hearbeat info sync error, url:%s | error:%s", hearbeatAPI, err.Error())
 		return err
 	}
 	result, _ := ioutil.ReadAll(resp.Body)
 	if resp.StatusCode != 200{
-		log.Printf("[heartbeatSchedule]Hearbeat schedule request failed! StatusCode:%d | detail:%s", resp.StatusCode, result)
+		log.Printf("[heartbeatSchedule]Hearbeat schedule request failed! StatusCode:%d | detail:%s",
+			resp.StatusCode, result)
 	}
 	defer resp.Body.Close()
 	return nil

@@ -50,7 +50,7 @@ func TaskProcessorByActiveMode(task constant.Task) {
 			task.Tid,
 		)
 		var startTime = GetCurTimeStr()
-		taskPid, result, errorCode, errorMsg, exitCode := ExecCommand(task)
+		taskPid, result, errorCode, errorMsg, exitCode := ExecTask(task)
 		updateData := map[string]string{
 			"tid":           task.Tid,
 			"status":        constant.TaskCompletedStatus,
@@ -110,7 +110,7 @@ func TaskProcessorByActiveMode(task constant.Task) {
 				"task(tid: %s, sync_type:async) get ready to exec...",
 			task.Tid,
 		)
-		go ExecCommand(task)
+		go ExecTask(task)
 		log.Printf("[TaskProcessorByActiveMode]task(tid: %s) exec...", task.Tid)
 	}
 }
@@ -119,7 +119,7 @@ func TaskProcessorByPassiveMode(task constant.Task) *constant.AgentResponse {
 	// 被动模式下执行task
 	response := &constant.AgentResponse{}
 	if task.Sync {
-		taskPid, result, errorCode, errorMsg, exitCode := ExecCommand(task)
+		taskPid, result, errorCode, errorMsg, exitCode := ExecTask(task)
 		//filename := GetFileNameByTid(task.Tid)
 		//MoveFilePath(filename)
 		log.Printf("[TaskController]task(tid: %s) completed.", task.Tid)
@@ -134,7 +134,7 @@ func TaskProcessorByPassiveMode(task constant.Task) *constant.AgentResponse {
 			ExitCode:   exitCode,
 		}
 	} else {
-		go ExecCommand(task)
+		go ExecTask(task)
 		response = &constant.AgentResponse{
 			Tid:        task.Tid,
 			Success:    "ok",
