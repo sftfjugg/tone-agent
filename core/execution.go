@@ -49,11 +49,10 @@ func getExecCmd(script string, task constant.Task) string {
 		suc, _ := WriteFile(tmpShellName, []byte(script))
 		execCmd = fmt.Sprintf("sh %s %s", tmpShellName, task.Args)
 		log.Printf(
-			"[ExecTask]task(tid: %s) script write to a temp file.success(%s) execCmd: %s",
+			"[ExecTask]task(tid: %s) script write to a temp file.success(%s)",
 			task.Tid,
 			strconv.FormatBool(suc),
-			execCmd,
-		)
+			)
 	}
 	return execCmd
 }
@@ -245,11 +244,10 @@ func writeExecResult(
 	WriteResult(resultMap, task.Sync)
 	log.Printf(
 		"[ExecTask]"+
-			"task(tid: %s) write exec result completed. errorCode:%s | errorMsg:%s | result:%s",
+			"task(tid: %s) write exec result completed. errorCode:%s | errorMsg:%s",
 		task.Tid,
 		errorCode,
 		errorMsg,
-		result,
 	)
 }
 
@@ -273,8 +271,7 @@ func ExecTask(task constant.Task) (string, string, string, string, string) {
 	cmdErr := cmd.Start()
 	if cmdErr != nil {
 		log.Printf(
-			"[ExecTask]cmd start failed!!!, cmd:%s | error:%s",
-			execCmd,
+			"[ExecTask]cmd start failed!, error:%s",
 			cmdErr.Error(),
 		)
 		syncErrorResult(
@@ -285,10 +282,9 @@ func ExecTask(task constant.Task) (string, string, string, string, string) {
 		)
 	}
 	log.Printf(""+
-		"[ExecTask]cmd start...., tid:%s | sync_type:%t | execCmd:%s",
+		"[ExecTask]cmd start...., tid:%s | sync_type:%t",
 		task.Tid,
 		task.Sync,
-		execCmd,
 	)
 	taskPid := cmd.Process.Pid
 	log.Printf(

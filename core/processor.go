@@ -64,9 +64,8 @@ func TaskProcessorByActiveMode(task constant.Task) {
 		}
 		log.Printf(
 			"[TaskProcessorByActiveMode]"+
-				"task(tid: %s, sync_type:sync) get ready to sync result..., result detail: %s",
+				"task(tid: %s, sync_type:sync) get ready to sync result...",
 			task.Tid,
-			updateData,
 		)
 		err := try.Do(func(attempt int) (bool, error) {
 			success = SyncResultToProxy(updateData, true, true)

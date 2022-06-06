@@ -44,7 +44,6 @@ func pullTaskSchedule() error {
 			return err2
 		}
 		if len(taskResult.Tasks) > 0{
-			log.Printf("[pullTaskSchedule]pull task success. result: %s", string(result))
 			for _, task := range taskResult.Tasks{
 				log.Printf("[pullTaskSchedule]task(tid: %s) get ready to running...", task.Tid)
 				go core.TaskProcessorByActiveMode(task)
@@ -52,8 +51,7 @@ func pullTaskSchedule() error {
 			}
 		}
 	}else{
-		log.Printf("[pullTaskSchedule]pull task failed! pull task url: %s | status code: %d",
-			pullTaskUrl, resp.StatusCode)
+		log.Printf("[pullTaskSchedule]pull task failed! status code: %d", resp.StatusCode)
 	}
 	defer resp.Body.Close()
 	return nil

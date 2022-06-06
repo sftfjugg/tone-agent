@@ -118,9 +118,8 @@ func SyncResultToProxy(values map[string]string, sync bool, finish bool) bool {
 	} else {
 		log.Printf(
 			"[SyncResultToProxy]"+
-				"sync result to proxy faild, tid:%s | detail:%s | status_code:%d",
+				"sync result to proxy faild, tid:%s | status_code:%d",
 			tid,
-			values,
 			resp.StatusCode,
 		)
 	}
