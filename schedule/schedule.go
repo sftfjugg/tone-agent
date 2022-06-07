@@ -121,7 +121,7 @@ func revisedData() error{
 }
 
 func heartbeatSchedule() error{
-	hearbeatAPI := core.GetProxyAPIUrl("HeartbeatApi")
+	heartbeatAPI := core.GetProxyAPIUrl("HeartbeatApi")
 	tsn := viper.GetString("tsn")
 	sign := core.GetSign()
 	data := map[string] string {
@@ -133,10 +133,10 @@ func heartbeatSchedule() error{
 	}
 	jsonData, _ := json.Marshal(data)
 	client := core.GetHttpClient()
-	resp, err := client.Post(hearbeatAPI,"application/json", bytes.NewBuffer(jsonData))
+	resp, err := client.Post(heartbeatAPI,"application/json", bytes.NewBuffer(jsonData))
 
 	if err != nil {
-		log.Printf("[heartbeatSchedule]Hearbeat info sync error, url:%s | error:%s", hearbeatAPI, err.Error())
+		log.Printf("[heartbeatSchedule]Hearbeat info sync error, url:%s | error:%s", heartbeatAPI, err.Error())
 		return err
 	}
 	result, _ := ioutil.ReadAll(resp.Body)
