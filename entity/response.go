@@ -1,4 +1,4 @@
-package constant
+package entity
 
 type AgentResponse struct {
 	Tid        string `json:"TID"`

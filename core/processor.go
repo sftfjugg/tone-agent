@@ -1,13 +1,15 @@
 package core
 
 import (
-	"github.com/matryer/try"
 	"log"
 	"time"
-	"tone-agent/constant"
+
+	"github.com/matryer/try"
+
+	"tone-agent/entity"
 )
 
-func TaskProcessorByActiveMode(task constant.Task) {
+func TaskProcessorByActiveMode(task entity.Task) {
 	//主动模式下执行task
 	log.Printf(
 		"[TaskProcessorByActiveMode] "+
@@ -53,7 +55,7 @@ func TaskProcessorByActiveMode(task constant.Task) {
 		taskPid, result, errorCode, errorMsg, exitCode := ExecTask(task)
 		updateData := map[string]string{
 			"tid":           task.Tid,
-			"status":        constant.TaskCompletedStatus,
+			"status":        entity.TaskCompletedStatus,
 			"task_pid":      taskPid,
 			"result":        result,
 			"error_code":    errorCode,
@@ -114,15 +116,15 @@ func TaskProcessorByActiveMode(task constant.Task) {
 	}
 }
 
-func TaskProcessorByPassiveMode(task constant.Task) *constant.AgentResponse {
+func TaskProcessorByPassiveMode(task entity.Task) *entity.AgentResponse {
 	// 被动模式下执行task
-	response := &constant.AgentResponse{}
+	response := &entity.AgentResponse{}
 	if task.Sync {
 		taskPid, result, errorCode, errorMsg, exitCode := ExecTask(task)
 		//filename := GetFileNameByTid(task.Tid)
 		//MoveFilePath(filename)
 		log.Printf("[TaskController]task(tid: %s) completed.", task.Tid)
-		response = &constant.AgentResponse{
+		response = &entity.AgentResponse{
 			Tid:        task.Tid,
 			Success:    "ok",
 			TaskStatus: "completed",
@@ -134,7 +136,7 @@ func TaskProcessorByPassiveMode(task constant.Task) *constant.AgentResponse {
 		}
 	} else {
 		go ExecTask(task)
-		response = &constant.AgentResponse{
+		response = &entity.AgentResponse{
 			Tid:        task.Tid,
 			Success:    "ok",
 			TaskStatus: "running",

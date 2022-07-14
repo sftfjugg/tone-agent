@@ -3,13 +3,13 @@ package core
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"log"
 	"time"
+	"tone-agent/entity"
 )
 
 func SyncStatusToProxy(tid string, status string) bool {
-	syncUrl := GetProxyAPIUrl("SyncResultApi")
+	syncUrl := GetProxyAPIUrl(entity.AgentApiSyncResult)
 	sign := GetSign()
 	values := map[string]string{"tid": tid, "status": status, "sign": sign}
 	jsonValue, _ := json.Marshal(values)
@@ -47,7 +47,7 @@ func SyncStatusToProxy(tid string, status string) bool {
 }
 
 func SyncExecTimeToProxy(tid string, timeType string, pid string) bool {
-	syncUrl := GetProxyAPIUrl("SyncResultApi")
+	syncUrl := GetProxyAPIUrl(entity.AgentApiSyncResult)
 	sign := GetSign()
 	values := map[string]string{
 		"tid":      tid,
@@ -90,11 +90,10 @@ func SyncExecTimeToProxy(tid string, timeType string, pid string) bool {
 
 func SyncResultToProxy(values map[string]string, sync bool, finish bool) bool {
 	values["sign"] = GetSign()
-	syncUrl := fmt.Sprintf("%s", GetProxyAPIUrl("SyncResultApi"))
 	tid := values["tid"]
 	jsonValue, _ := json.Marshal(values)
 	client := GetHttpClient()
-	resp, err := client.Post(syncUrl, "application/json", bytes.NewBuffer(jsonValue))
+	resp, err := client.Post(GetProxyAPIUrl(entity.AgentApiSyncResult), "application/json", bytes.NewBuffer(jsonValue))
 	if err != nil {
 		log.Printf(
 			"[SyncResultToProxy]sync result to proxy error, tid:%s | error:%s",

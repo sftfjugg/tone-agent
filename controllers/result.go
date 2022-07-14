@@ -2,9 +2,11 @@ package controllers
 
 import (
 	"encoding/json"
-	"github.com/astaxie/beego"
 	"log"
-	"tone-agent/constant"
+
+	"github.com/astaxie/beego"
+
+	"tone-agent/entity"
 	"tone-agent/core"
 )
 
@@ -17,7 +19,7 @@ func (pc *ResultController) Get() {
 	log.Printf("[ResultController]Query task(tid: %s) request.", tid)
 	filename := core.GetFileNameByTid(tid)
 	fileExist := core.CheckFileIsExist(filename)
-	response := &constant.AgentResponse{
+	response := &entity.AgentResponse{
 		Tid:     tid,
 		Success: "ok",
 	}
@@ -27,7 +29,7 @@ func (pc *ResultController) Get() {
 		_ = json.Unmarshal([]byte(result), &resultMap)
 		response.TaskStatus = resultMap["status"]
 		response.TaskPid = resultMap["taskPid"]
-		if resultMap["status"] == constant.TaskCompletedStatus {
+		if resultMap["status"] == entity.TaskCompletedStatus {
 			response.ErrorCode = resultMap["errorCode"]
 			response.ErrorMsg = resultMap["errorMsg"]
 			response.ExitCode = resultMap["exitCode"]

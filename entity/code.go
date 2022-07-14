@@ -1,4 +1,4 @@
-package constant
+package entity
 
 const (
 	ParamsErrorCode = "a-1001"

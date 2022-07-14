@@ -5,9 +5,6 @@ import (
 	"context"
 	"encoding/base64"
 	"fmt"
-	"github.com/astaxie/beego"
-	"github.com/matryer/try"
-	"github.com/spf13/viper"
 	"log"
 	"os"
 	"os/exec"
@@ -15,10 +12,15 @@ import (
 	"strings"
 	"syscall"
 	"time"
-	"tone-agent/constant"
+
+	"github.com/astaxie/beego"
+	"github.com/matryer/try"
+	"github.com/spf13/viper"
+
+	"tone-agent/entity"
 )
 
-func decodeScript(task constant.Task) string {
+func decodeScript(task entity.Task) string {
 	uDec, err := base64.StdEncoding.DecodeString(task.Script)
 	if err != nil {
 		log.Printf(
@@ -31,7 +33,7 @@ func decodeScript(task constant.Task) string {
 	return script
 }
 
-func getExecCmd(script string, task constant.Task) string {
+func getExecCmd(script string, task entity.Task) string {
 	var execCmd string
 	if task.ScriptType == "cmd" {
 		execCmd = fmt.Sprintf("%s %s", script, task.Args)
@@ -52,27 +54,27 @@ func getExecCmd(script string, task constant.Task) string {
 			"[ExecTask]task(tid: %s) script write to a temp file.success(%s)",
 			task.Tid,
 			strconv.FormatBool(suc),
-			)
+		)
 	}
 	return execCmd
 }
 
-func getEnv(task constant.Task) []string {
+func getEnv(task entity.Task) []string {
 	envArr := strings.Split(task.Env, ",")
-// 	for _, e := range os.Environ() {
-//         envArr = append(envArr, e)
-//     }
-//     log.Printf("env:%s", envArr)
+	// 	for _, e := range os.Environ() {
+	//         envArr = append(envArr, e)
+	//     }
+	//     log.Printf("env:%s", envArr)
 	envArr = append(envArr, fmt.Sprintf("PATH=%s", os.Getenv("PATH")))
 	envArr = append(envArr, "HOME=/root")
 	return envArr
 }
 
-func syncExecInfo(task constant.Task, taskPid int, script string) {
+func syncExecInfo(task entity.Task, taskPid int, script string) {
 	runningResultMap := map[string]string{}
 	if taskPid != 0 && strings.Contains(script, "reboot") {
 		runningResultMap = map[string]string{
-			"status":   constant.TaskCompletedStatus,
+			"status":   entity.TaskCompletedStatus,
 			"tid":      task.Tid,
 			"task_pid": strconv.Itoa(taskPid),
 			//"script": script,
@@ -87,7 +89,7 @@ func syncExecInfo(task constant.Task, taskPid int, script string) {
 		if viper.Get("mode") == "active" {
 			// active模式下执行reboot命令，将重启执行结果同步到proxy端
 			updateDate := map[string]string{
-				"status":      constant.TaskCompletedStatus,
+				"status":      entity.TaskCompletedStatus,
 				"tid":         task.Tid,
 				"task_pid":    strconv.Itoa(taskPid),
 				"result":      "reboot command executed success",
@@ -100,7 +102,7 @@ func syncExecInfo(task constant.Task, taskPid int, script string) {
 				if attempt > 10 {
 					log.Printf(
 						"[syncExecInfo]sync exec info to proxy failed, "+
-						"more than 10 retries！tid: %s",
+							"more than 10 retries！tid: %s",
 						task.Tid,
 					)
 					return false, nil
@@ -135,7 +137,7 @@ func syncExecInfo(task constant.Task, taskPid int, script string) {
 		}
 	} else {
 		runningResultMap = map[string]string{
-			"status":  constant.TaskRunningStatus,
+			"status":  entity.TaskRunningStatus,
 			"tid":     task.Tid,
 			"taskPid": strconv.Itoa(taskPid),
 			//"script": script,
@@ -151,7 +153,7 @@ func syncExecInfo(task constant.Task, taskPid int, script string) {
 				)
 				if attempt > 10 {
 					log.Printf(
-						"[syncExecInfo]sync exec time to proxy failed," +
+						"[syncExecInfo]sync exec time to proxy failed,"+
 							"more than 10 retries！tid: %s",
 						task.Tid,
 					)
@@ -187,10 +189,10 @@ func syncExecInfo(task constant.Task, taskPid int, script string) {
 	}
 }
 
-func getExecErrInfo(execErr error, task constant.Task) (string, string, string) {
+func getExecErrInfo(execErr error, task entity.Task) (string, string, string) {
 	var exitCode string
-	errorCode := constant.ExecCmdErrorCode
-	errorMsg := fmt.Sprintf("%s(%s)", constant.ExecCmdErrorMsg, execErr.Error())
+	errorCode := entity.ExecCmdErrorCode
+	errorMsg := fmt.Sprintf("%s(%s)", entity.ExecCmdErrorMsg, execErr.Error())
 
 	if exiterr, ok := execErr.(*exec.ExitError); ok {
 		if status, ok := exiterr.Sys().(syscall.WaitStatus); ok {
@@ -208,7 +210,7 @@ func getExecErrInfo(execErr error, task constant.Task) (string, string, string) 
 func syncErrorResult(tid string, errorCode string, errorMsg string, sync bool) {
 	resultMap := map[string]string{
 		"tid":        tid,
-		"status":     constant.TaskCompletedStatus,
+		"status":     entity.TaskCompletedStatus,
 		"errorCode":  errorCode,
 		"errorMsg":   errorMsg,
 		"finishTime": GetCurTimeStr(),
@@ -217,15 +219,15 @@ func syncErrorResult(tid string, errorCode string, errorMsg string, sync bool) {
 }
 
 func writeExecResult(
-	task constant.Task,
+	task entity.Task,
 	taskPid int,
 	errorCode string,
 	errorMsg string,
 	result string,
 	exitCode string) {
 	resultMap := map[string]string{
-		"status":     constant.TaskCompletedStatus,
-		"tid":        task.Tid,
+		"status": entity.TaskCompletedStatus,
+		"tid":    task.Tid,
 		//"script":     task.Script,
 		"taskPid":    strconv.Itoa(taskPid),
 		"errorCode":  errorCode,
@@ -251,7 +253,7 @@ func writeExecResult(
 	)
 }
 
-func ExecTask(task constant.Task) (string, string, string, string, string) {
+func ExecTask(task entity.Task) (string, string, string, string, string) {
 	script := decodeScript(task)
 	execCmd := getExecCmd(script, task)
 	env := getEnv(task)
@@ -319,7 +321,6 @@ func ExecTask(task constant.Task) (string, string, string, string, string) {
 	writeExecResult(task, taskPid, errorCode, errorMsg, result, exitCode)
 	return strconv.Itoa(taskPid), result, errorCode, errorMsg, exitCode
 }
-
 
 func ExecCommand(execCmd string) (string, ) {
 	var stdout, stderr bytes.Buffer

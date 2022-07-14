@@ -1,4 +1,4 @@
-package constant
+package entity
 
 type Task struct {
 	Tid        string `json:"TID"`

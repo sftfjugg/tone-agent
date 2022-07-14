@@ -1,8 +1,10 @@
 package controllers
 
 import (
-	"github.com/astaxie/beego"
 	"log"
+
+	"github.com/astaxie/beego"
+
 	"tone-agent/core"
 )
 
@@ -14,9 +16,9 @@ func (pc *HeartbeatController) Get() {
 	log.Println("[HeartbeatController]heartbeat request from proxy...")
 	pc.Data["json"] = map[string]string{
 		"SUCCESS": "ok",
-		"ARCH": core.ExecCommand("arch"),
-		"KERNEL": core.ExecCommand("uname -r"),
-		"DISTRO": core.ExecCommand("cat /etc/os-release | grep -i id="),
+		"ARCH":    core.ExecCommand("arch"),
+		"KERNEL":  core.ExecCommand("uname -r"),
+		"DISTRO":  core.ExecCommand("cat /etc/os-release | grep -i id="),
 	}
 	pc.ServeJSON()
 	pc.StopRun()

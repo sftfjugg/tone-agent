@@ -2,9 +2,11 @@ package controllers
 
 import (
 	"encoding/json"
-	"github.com/astaxie/beego"
 	"log"
-	"tone-agent/constant"
+
+	"github.com/astaxie/beego"
+
+	"tone-agent/entity"
 	"tone-agent/core"
 )
 
@@ -12,25 +14,24 @@ type TaskController struct {
 	beego.Controller
 }
 
-
 func (pc *TaskController) Post() {
 	// 接收参数
-	task := constant.Task{}
+	task := entity.Task{}
 	data := pc.Ctx.Input.RequestBody
 	if err := json.Unmarshal(data, &task); err == nil {
 		// 解析参数失败
 	}
 	log.Printf("[TaskController]Receive task(tid:%s)", task.Tid)
-	response := &constant.AgentResponse{}
-	if task.Tid == "" || task.Script == ""{
+	response := &entity.AgentResponse{}
+	if task.Tid == "" || task.Script == "" {
 		log.Println("[TaskController] Task tid or script is null, task cannot running")
-		response = &constant.AgentResponse{
+		response = &entity.AgentResponse{
 			Tid:        task.Tid,
 			Success:    "fail",
-			TaskStatus: constant.ParamsErrorCode,
-			ErrorCode: constant.ParamsErrorMsg,
+			TaskStatus: entity.ParamsErrorCode,
+			ErrorCode:  entity.ParamsErrorMsg,
 		}
-	}else{
+	} else {
 		response = core.TaskProcessorByPassiveMode(task)
 	}
 	pc.Data["json"] = response
