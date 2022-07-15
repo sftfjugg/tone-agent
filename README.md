@@ -1,6 +1,6 @@
 # ToneAgent
 
-[![](https://img.shields.io/badge/made%20by-openanolis-blue.svg?style=flat-square)](https://protocol.ai)
+[![](https://img.shields.io/badge/made%20by-openanolis-blue.svg?style=flat-square)](https://openanolis.cn/)
 [![standard-readme compliant](https://img.shields.io/badge/standard--readme-OK-green.svg?style=flat-square)](https://github.com/RichardLitt/standard-readme)
 
 > ToneAgent是T-One运行用例的物理机器代理
@@ -77,7 +77,7 @@ proxy: https://tone-agent.openanolis.cn # T-One代理地址
 
 **场景**  
 
-> 适用于部署 `Agent` 的机器位于NAT之后,无法通过公网 `IP` 直接进行访问
+> 适用于部署 `Agent` 的机器位于 `NAT` 之后,无法通过公网 `IP` 直接进行访问
 
 通过在 `config.yaml` 中配置`T-One`的代理设置, 让部署 `ToneAgent` 的相关机器主动连接 `T-One`代理, 从而让相关机器能 `PULL` 任务、`PUSH` 任务和执行任务。
 
@@ -89,7 +89,7 @@ proxy: https://tone-agent.openanolis.cn # T-One代理地址
 
 > 适用于 `T-One` 代理位于 `NAT` 之后, 无法通过公网 `IP` 直接进行访问
 
-`T-One`的代理端主动连接部署 `ToneAgent` 的相关机器, 从而让相关机器能 `PULL` 任务、`PUSH` 任务和执行任务。
+`T-One`的代理端会向部署 `ToneAgent` 的相关机器推送任务, 从而让相关机器能执行任务。
 
 
 
