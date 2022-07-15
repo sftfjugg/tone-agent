@@ -4,8 +4,6 @@ import (
 	"crypto/tls"
 	"encoding/base64"
 	"fmt"
-	"github.com/astaxie/beego"
-	"github.com/spf13/viper"
 	"log"
 	"math/rand"
 	"net/http"
@@ -13,6 +11,8 @@ import (
 	"syscall"
 	"time"
 	"unsafe"
+
+	"github.com/spf13/viper"
 )
 
 const (
@@ -24,12 +24,9 @@ const (
 
 var src = rand.NewSource(time.Now().UnixNano())
 
-func GetProxyAPIUrl(apiName string) string {
-	//domain := beego.AppConfig.String("ProxyDomain")
+func GetProxyAPIUrl(api string) string {
 	domain := viper.Get("proxy")
-	api := beego.AppConfig.String(apiName)
-	url := fmt.Sprintf("%s/%s", domain, api)
-	return url
+	return fmt.Sprintf("%v/%v", domain, api)
 }
 
 func RandStringBytesMaskImprSrcUnsafe(n int) string {
