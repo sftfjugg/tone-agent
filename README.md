@@ -75,7 +75,23 @@ proxy: https://tone-agent.openanolis.cn # T-One代理地址
 
 ### 主动模式
 
+**场景**  
+
+> 适用于部署 `Agent` 的机器位于NAT之后,无法通过公网 `IP` 直接进行访问
+
+通过在 `config.yaml` 中配置`T-One`的代理设置, 让部署 `ToneAgent` 的相关机器主动连接 `T-One`代理, 从而让相关机器能 `PULL` 任务、`PUSH` 任务和执行任务。
+
+`T-One` 代理设置: `proxy: https://tone-agent.openanolis.cn`
+
 ### 被动模式
+
+**场景**
+
+> 适用于 `T-One` 代理位于 `NAT` 之后, 无法通过公网 `IP` 直接进行访问
+
+`T-One`的代理端主动连接部署 `ToneAgent` 的相关机器, 从而让相关机器能 `PULL` 任务、`PUSH` 任务和执行任务。
+
+
 
 ## 贡献
 
