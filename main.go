@@ -5,9 +5,7 @@ import (
 	"log"
 	"os"
 	"path"
-	"path/filepath"
 
-	"tone-agent/comm"
 	"tone-agent/controllers"
 	"tone-agent/core"
 	"tone-agent/schedule"
@@ -19,30 +17,16 @@ import (
 )
 
 func main() {
-	toneAgentPath := os.Getenv("TONE_AGENT_PATH")
-	if toneAgentPath != "" {
-		absPath, err := filepath.Abs(toneAgentPath)
-		if err != nil {
-			toneAgentPath = ""
-		} else {
-			toneAgentPath = absPath
-		}
-	}
-
-	if toneAgentPath == "" {
-		user, err := comm.Home()
-		if err != nil {
-			log.Printf("Fetch directory of system user failed: %v", err)
-			return
-		}
-		toneAgentPath = path.Join(user, "ToneAgent")
+	toneAgentPath, err := core.GetToneAgentPath()
+	if err != nil {
+		return
 	}
 	log.Printf("ToneAgent config path: %v", toneAgentPath)
 	viper.AddConfigPath(toneAgentPath)
 	viper.AddConfigPath(".")
 	viper.SetConfigName("config")
 	viper.SetConfigType("yaml")
-	err := viper.ReadInConfig()
+	err = viper.ReadInConfig()
 	if err != nil {
 		log.Printf("Read config file failed: %s", err)
 	}
@@ -51,13 +35,13 @@ func main() {
 		log.Println("Configuration files have been changed, file:", e.Name)
 	})
 
-	setBeegoConfig()
-
 	resultDirs := make(map[string]string, 4)
 	resultDirs["result"] = path.Join(toneAgentPath, viper.GetString("result.ResultFileDir"))
 	resultDirs["waiting_sync_result"] = path.Join(toneAgentPath, viper.GetString("result.WaitingSyncResultDir"))
 	resultDirs["scripts"] = path.Join(toneAgentPath, viper.GetString("result.TmpScriptFileDir"))
 	resultDirs["logs"] = path.Join(toneAgentPath, viper.GetString("result.LogFileDir"))
+
+	setBeegoConfig(resultDirs)
 
 	for key, value := range resultDirs {
 		if core.CheckFileIsExist(value) {
@@ -96,7 +80,7 @@ func main() {
 	beego.Run()
 }
 
-func setBeegoConfig() {
+func setBeegoConfig(configs map[string]string) {
 	beego.BConfig.AppName = viper.GetString("beego.AppName")
 	beego.BConfig.RunMode = viper.GetString("beego.RunMode")
 	beego.BConfig.Listen.HTTPAddr = viper.GetString("beego.HttpAddr")
@@ -104,4 +88,7 @@ func setBeegoConfig() {
 	beego.BConfig.WebConfig.StaticDir["/down1"] = viper.GetString("beego.StaticDir")
 	beego.BConfig.WebConfig.DirectoryIndex = viper.GetBool("beego.DirectoryIndex")
 	beego.BConfig.CopyRequestBody = viper.GetBool("beego.CopyRequestBody")
+	_ = beego.AppConfig.Set("TmpScriptFileDir", configs["scripts"])
+	_ = beego.AppConfig.Set("WaitingSyncResultDir", configs["waiting_sync_result"])
+	_ = beego.AppConfig.Set("ResultFileDir", configs["result"])
 }
