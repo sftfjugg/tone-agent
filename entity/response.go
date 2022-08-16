@@ -11,3 +11,15 @@ type AgentResponse struct {
 	ExitCode   string `json:"EXIT_CODE"`
 	FinishTime string `json:"FINISH_TIME"`
 }
+
+type TSNResponse struct {
+	CODE int `json:"code"`
+	MSG string `json:"msg"`
+	TSN string `json:"tsn"`
+}
+
+type IPResponse struct {
+	CODE int `json:"code"`
+	MSG string `json:"msg"`
+	IP string `json:"ip"`
+}

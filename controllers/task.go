@@ -14,10 +14,10 @@ type TaskController struct {
 	beego.Controller
 }
 
-func (pc *TaskController) Post() {
+func (tc *TaskController) Post() {
 	// 接收参数
 	task := entity.Task{}
-	data := pc.Ctx.Input.RequestBody
+	data := tc.Ctx.Input.RequestBody
 	if err := json.Unmarshal(data, &task); err == nil {
 		// 解析参数失败
 	}
@@ -34,7 +34,7 @@ func (pc *TaskController) Post() {
 	} else {
 		response = core.TaskProcessorByPassiveMode(task)
 	}
-	pc.Data["json"] = response
-	pc.ServeJSON()
-	pc.StopRun()
+	tc.Data["json"] = response
+	tc.ServeJSON()
+	tc.StopRun()
 }

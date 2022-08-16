@@ -6,8 +6,8 @@ import (
 	"os"
 	"path"
 
-	"tone-agent/controllers"
 	"tone-agent/core"
+	_ "tone-agent/routers"
 	"tone-agent/schedule"
 
 	"github.com/astaxie/beego"
@@ -73,10 +73,6 @@ func main() {
 	log.SetPrefix("[tone-agent]")
 	log.SetFlags(log.Ldate | log.Ltime)
 
-	// router
-	beego.Router("api/task", &controllers.TaskController{})
-	beego.Router("api/query", &controllers.ResultController{})
-	beego.Router("api/heartbeat", &controllers.HeartbeatController{})
 	beego.Run()
 }
 

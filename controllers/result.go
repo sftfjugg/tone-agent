@@ -14,8 +14,8 @@ type ResultController struct {
 	beego.Controller
 }
 
-func (pc *ResultController) Get() {
-	tid := pc.GetString("tid")
+func (rc *ResultController) Get() {
+	tid := rc.GetString("tid")
 	log.Printf("[ResultController]Query task(tid: %s) request.", tid)
 	filename := core.GetFileNameByTid(tid)
 	fileExist := core.CheckFileIsExist(filename)
@@ -39,7 +39,7 @@ func (pc *ResultController) Get() {
 			log.Printf("[ResultController]Task(tid: %s) completed.", tid)
 		}
 	}
-	pc.Data["json"] = response
-	pc.ServeJSON()
-	pc.StopRun()
+	rc.Data["json"] = response
+	rc.ServeJSON()
+	rc.StopRun()
 }
