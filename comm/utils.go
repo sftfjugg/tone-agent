@@ -6,16 +6,14 @@ import (
 	"encoding/hex"
 	"errors"
 	"fmt"
+	"github.com/astaxie/beego"
 	"github.com/spf13/viper"
-	"gopkg.in/yaml.v2"
-	"log"
 	"net"
 	"os"
 	"os/exec"
 	"os/user"
 	"runtime"
 	"strings"
-	"tone-agent/entity"
 )
 
 func Home() (string, error) {
@@ -105,44 +103,44 @@ func GetLocalIP() (ip string) {
 	}
 	return
 }
-
-func GetConfig() (entity.Config, error){
-	var configViper = viper.New()
-	configViper.AddConfigPath(".")
-	configViper.AddConfigPath("/usr/local/toneagent/conf/toneagent.toneagent.config.yaml")
-	configViper.SetConfigName("config")
-	configViper.SetConfigType("yaml")
-	//读取配置文件内容
-	if err := configViper.ReadInConfig(); err != nil {
-		log.Println("[GetConfig] get config file error:", err)
-	}
-	var config entity.Config
-	if err := configViper.Unmarshal(&config); err != nil {
-		log.Println("[GetConfig] unmarshal config error:", err)
-	}
-	return config, nil
-}
+//
+//func GetConfig() entity.Config{
+//	//var configViper = viper.New()
+//	//configViper.AddConfigPath(".")
+//	//configViper.AddConfigPath("/usr/local/toneagent/conf/toneagent.toneagent.config.yaml")
+//	//configViper.SetConfigName("config")
+//	//configViper.SetConfigType("yaml")
+//	//读取配置文件内容
+//	//if err := configViper.ReadInConfig(); err != nil {
+//	//	log.Println("[GetConfig] get config file error:", err)
+//	//}
+//	return entity.Config{TSN: "x", Mode: "x", Proxy: "x"}
+//	//var config entity.Config
+//	//if err := configViper.Unmarshal(&config); err != nil {
+//	//	log.Println("[GetConfig] unmarshal config error:", err)
+//	//}
+//	//return config, nil
+//}
 
 func SetConfig(tsn string, mode string, proxy string) error{
 	var configViper = viper.New()
 	configViper.AddConfigPath(".")
-	configViper.SetConfigName("config")
+	configViper.AddConfigPath(beego.AppConfig.String("AgentConfigFilePath"))
+	configViper.SetConfigName(beego.AppConfig.String("AgentConfigFileName"))
 	configViper.SetConfigType("yaml")
-	if tsn != ""{
-		configViper.Set("tsn", tsn)
+	if tsn == ""{
+		tsn = viper.GetString("tsn")
 	}
-	if mode != ""{
-		configViper.Set("mode", mode)
+	if mode == ""{
+		mode = viper.GetString("mode")
 	}
-	if proxy != ""{
-		configViper.Set("proxy", proxy)
+	if proxy == ""{
+		proxy = viper.GetString("proxy")
 	}
-	c := configViper.AllSettings()
-	bytess, err := yaml.Marshal(c)
-	if err != nil {
-		return err
-	}
-	fmt.Println(string(bytess))
+	configViper.Set("tsn", tsn)
+	configViper.Set("mode", mode)
+	configViper.Set("proxy", proxy)
+	configViper.WriteConfig()
 	return nil
 }
 

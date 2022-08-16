@@ -19,7 +19,7 @@ import (
 )
 
 func pullTaskSchedule() error {
-	pullTaskUrl := core.GetProxyAPIUrl(entity.AgentApiPullTask)
+	pullTaskUrl := core.GetProxyAPIUrl(entity.AgentAPIPullTask)
 	tsn := viper.GetString("tsn")
 	sign := core.GetSign()
 	data := map[string]string{"tsn": tsn, "sign": sign}
@@ -122,7 +122,7 @@ func revisedData() error {
 }
 
 func heartbeatSchedule() error {
-	heartbeatAPI := core.GetProxyAPIUrl(entity.AgentApiHeartbeat)
+	heartbeatAPI := core.GetProxyAPIUrl(entity.AgentAPIHeartbeat)
 	tsn := viper.GetString("tsn")
 	sign := core.GetSign()
 	data := map[string]string{

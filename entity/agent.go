@@ -1,7 +1,7 @@
 package entity
 
 const (
-	AgentApiSyncResult = "api/agent/result_sync"
-	AgentApiPullTask   = "api/agent/pull_task"
-	AgentApiHeartbeat  = "api/agent/heartbeat"
+	AgentAPISyncResult = "api/agent/result_sync"
+	AgentAPIPullTask   = "api/agent/pull_task"
+	AgentAPIHeartbeat  = "api/agent/heartbeat"
 )

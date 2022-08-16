@@ -9,7 +9,7 @@ import (
 )
 
 func SyncStatusToProxy(tid string, status string) bool {
-	syncUrl := GetProxyAPIUrl(entity.AgentApiSyncResult)
+	syncUrl := GetProxyAPIUrl(entity.AgentAPISyncResult)
 	sign := GetSign()
 	values := map[string]string{"tid": tid, "status": status, "sign": sign}
 	jsonValue, _ := json.Marshal(values)
@@ -47,7 +47,7 @@ func SyncStatusToProxy(tid string, status string) bool {
 }
 
 func SyncExecTimeToProxy(tid string, timeType string, pid string) bool {
-	syncUrl := GetProxyAPIUrl(entity.AgentApiSyncResult)
+	syncUrl := GetProxyAPIUrl(entity.AgentAPISyncResult)
 	sign := GetSign()
 	values := map[string]string{
 		"tid":      tid,
@@ -93,7 +93,7 @@ func SyncResultToProxy(values map[string]string, sync bool, finish bool) bool {
 	tid := values["tid"]
 	jsonValue, _ := json.Marshal(values)
 	client := GetHttpClient()
-	resp, err := client.Post(GetProxyAPIUrl(entity.AgentApiSyncResult), "application/json", bytes.NewBuffer(jsonValue))
+	resp, err := client.Post(GetProxyAPIUrl(entity.AgentAPISyncResult), "application/json", bytes.NewBuffer(jsonValue))
 	if err != nil {
 		log.Printf(
 			"[SyncResultToProxy]sync result to proxy error, tid:%s | error:%s",

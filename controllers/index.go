@@ -3,6 +3,7 @@ package controllers
 import (
 	"encoding/json"
 	"github.com/astaxie/beego"
+	"github.com/spf13/viper"
 	"strings"
 	"tone-agent/comm"
 	"tone-agent/entity"
@@ -67,13 +68,13 @@ func (scc *SetConfigController) Post() {
 	if err != nil{
 		panic(err)
 	}
-	conf, _:= comm.GetConfig()
+
 	response := &entity.TSNResponse{
 		Code: 200,
 		Msg:  "success",
-		TSN:  conf.TSN,
-		Mode:  conf.Mode,
-		Proxy:  conf.Proxy,
+		TSN:  viper.GetString("tsn"),
+		Mode:  viper.GetString("mode"),
+		Proxy:  viper.GetString("proxy"),
 	}
 	scc.Data["json"] = response
 	scc.ServeJSON()
@@ -83,13 +84,12 @@ func (scc *SetConfigController) Post() {
 func (gcc *GetConfigController) Get() {
 	//var conf entity.Config
 	//conf.GetConf()
-	conf, _:= comm.GetConfig()
 	response := &entity.TSNResponse{
 		Code: 200,
 		Msg:  "success",
-		TSN:  conf.TSN,
-		Mode:  conf.Mode,
-		Proxy:  conf.Proxy,
+		TSN:  viper.GetString("tsn"),
+		Mode:  viper.GetString("mode"),
+		Proxy:  viper.GetString("proxy"),
 	}
 	gcc.Data["json"] = response
 	gcc.ServeJSON()
