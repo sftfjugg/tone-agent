@@ -22,4 +22,7 @@ func init() {
 
 	// ip
 	beego.Router("ip/info", &controllers.GetIpAddrController{})
+
+	// log
+	beego.Router("log/info", &controllers.GetLogController{})
 }

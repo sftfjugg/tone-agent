@@ -16,8 +16,6 @@ type TSNResponse struct {
 	Code  int    `json:"code"`
 	Msg   string `json:"msg"`
 	TSN   string `json:"tsn"`
-	Mode  string `json:"mode"`
-	Proxy string `json:"proxy"`
 }
 
 type IPResponse struct {
@@ -29,9 +27,13 @@ type IPResponse struct {
 type ConfigResponse struct {
 	Code  int    `json:"code"`
 	Msg   string `json:"msg"`
-	TSN   string `json:"tsn"`
-	Mode  string `json:"mode"`
-	Proxy string `json:"proxy"`
+	Config   Config `json:"config"`
+}
+
+type LogResponse struct {
+	Code  int    `json:"code"`
+	Msg   string `json:"msg"`
+	Log   string `json:"log"`
 }
 
 type ErrorResponse struct {

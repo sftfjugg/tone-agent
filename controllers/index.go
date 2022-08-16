@@ -29,6 +29,10 @@ type GetIpAddrController struct {
 	beego.Controller
 }
 
+type GetLogController struct {
+	beego.Controller
+}
+
 func (c *MainController) Get() {
 	c.TplName = "index.html"
 }
@@ -36,10 +40,10 @@ func (c *MainController) Get() {
 func (gtc *GenerateTSNController) Get() {
 	macAddrs := comm.GetMacAddrs()
 	macAddrStr := strings.Join(macAddrs, `|`)
-	macAddrEncrypt := comm.MD5Encrypt(macAddrStr, "tone-agent")
+	macAddrEncrypt := comm.MD5Encrypt(macAddrStr, entity.AgentTSNSalt)
 	response := &entity.TSNResponse{
-		Code: 200,
-		Msg:  "success",
+		Code: entity.SuccessCode,
+		Msg:  entity.SuccessMsg,
 		TSN:  macAddrEncrypt,
 	}
 	gtc.Data["json"] = response
@@ -68,13 +72,14 @@ func (scc *SetConfigController) Post() {
 	if err != nil{
 		panic(err)
 	}
-
-	response := &entity.TSNResponse{
-		Code: 200,
-		Msg:  "success",
-		TSN:  viper.GetString("tsn"),
-		Mode:  viper.GetString("mode"),
-		Proxy:  viper.GetString("proxy"),
+	response := &entity.ConfigResponse{
+		Code: entity.SuccessCode,
+		Msg:  entity.SuccessMsg,
+		Config: entity.Config{
+			TSN:  viper.GetString("tsn"),
+			Mode:  viper.GetString("mode"),
+			Proxy:  viper.GetString("proxy"),
+		},
 	}
 	scc.Data["json"] = response
 	scc.ServeJSON()
@@ -82,14 +87,26 @@ func (scc *SetConfigController) Post() {
 }
 
 func (gcc *GetConfigController) Get() {
-	//var conf entity.Config
-	//conf.GetConf()
-	response := &entity.TSNResponse{
-		Code: 200,
-		Msg:  "success",
-		TSN:  viper.GetString("tsn"),
-		Mode:  viper.GetString("mode"),
-		Proxy:  viper.GetString("proxy"),
+	response := &entity.ConfigResponse{
+		Code: entity.SuccessCode,
+		Msg:  entity.SuccessMsg,
+		Config: entity.Config{
+			TSN:  viper.GetString("tsn"),
+			Mode:  viper.GetString("mode"),
+			Proxy:  viper.GetString("proxy"),
+		},
+	}
+	gcc.Data["json"] = response
+	gcc.ServeJSON()
+	gcc.StopRun()
+}
+
+func (gcc *GetLogController) Get() {
+	log := comm.GetLog()
+	response := &entity.LogResponse{
+		Code: entity.SuccessCode,
+		Msg:  entity.SuccessMsg,
+		Log: log,
 	}
 	gcc.Data["json"] = response
 	gcc.ServeJSON()
@@ -97,11 +114,11 @@ func (gcc *GetConfigController) Get() {
 }
 
 func (giac *GetIpAddrController) Get() {
-	ipAddr := comm.GetLocalIP()
+	IPAddr := comm.GetLocalIP()
 	response := &entity.IPResponse{
-		Code: 200,
-		Msg:  "success",
-		IP:   ipAddr,
+		Code: entity.SuccessCode,
+		Msg:  entity.SuccessMsg,
+		IP:   IPAddr,
 	}
 	giac.Data["json"] = response
 	giac.ServeJSON()
