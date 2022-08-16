@@ -13,13 +13,28 @@ type AgentResponse struct {
 }
 
 type TSNResponse struct {
-	CODE int `json:"code"`
-	MSG string `json:"msg"`
-	TSN string `json:"tsn"`
+	Code  int    `json:"code"`
+	Msg   string `json:"msg"`
+	TSN   string `json:"tsn"`
+	Mode  string `json:"mode"`
+	Proxy string `json:"proxy"`
 }
 
 type IPResponse struct {
-	CODE int `json:"code"`
-	MSG string `json:"msg"`
-	IP string `json:"ip"`
+	Code int    `json:"code"`
+	Msg  string `json:"msg"`
+	IP   string `json:"ip"`
+}
+
+type ConfigResponse struct {
+	Code  int    `json:"code"`
+	Msg   string `json:"msg"`
+	TSN   string `json:"tsn"`
+	Mode  string `json:"mode"`
+	Proxy string `json:"proxy"`
+}
+
+type ErrorResponse struct {
+	Code  string    `json:"code"`
+	Msg   string `json:"msg"`
 }

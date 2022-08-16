@@ -24,7 +24,7 @@ func main() {
 	log.Printf("ToneAgent config path: %v", toneAgentPath)
 	viper.AddConfigPath(toneAgentPath)
 	viper.AddConfigPath(".")
-	viper.SetConfigName("config")
+	//viper.SetConfigName("config")
 	viper.SetConfigType("yaml")
 	err = viper.ReadInConfig()
 	if err != nil {

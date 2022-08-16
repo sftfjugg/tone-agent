@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"encoding/json"
 	"github.com/astaxie/beego"
 	"strings"
 	"tone-agent/comm"
@@ -12,6 +13,14 @@ type MainController struct {
 }
 
 type GenerateTSNController struct {
+	beego.Controller
+}
+
+type SetConfigController struct {
+	beego.Controller
+}
+
+type GetConfigController struct {
 	beego.Controller
 }
 
@@ -28,21 +37,71 @@ func (gtc *GenerateTSNController) Get() {
 	macAddrStr := strings.Join(macAddrs, `|`)
 	macAddrEncrypt := comm.MD5Encrypt(macAddrStr, "tone-agent")
 	response := &entity.TSNResponse{
-		CODE:	200,
-		MSG:	"success",
-		TSN:	macAddrEncrypt,
+		Code: 200,
+		Msg:  "success",
+		TSN:  macAddrEncrypt,
 	}
 	gtc.Data["json"] = response
 	gtc.ServeJSON()
 	gtc.StopRun()
 }
 
+func (scc *SetConfigController) Post() {
+	config := entity.Config{}
+	data := scc.Ctx.Input.RequestBody
+	if err := json.Unmarshal(data, &config); err != nil {
+		response := &entity.ErrorResponse{
+			Code: entity.PidNotExistErrorCode,
+			Msg:  entity.ParamsErrorMsg,
+		}
+		scc.Data["json"] = response
+		scc.ServeJSON()
+		scc.StopRun()
+	}
+	// 修改配置
+	err := comm.SetConfig(
+			config.TSN,
+			config.Mode,
+			config.Proxy,
+		)
+	if err != nil{
+		panic(err)
+	}
+	conf, _:= comm.GetConfig()
+	response := &entity.TSNResponse{
+		Code: 200,
+		Msg:  "success",
+		TSN:  conf.TSN,
+		Mode:  conf.Mode,
+		Proxy:  conf.Proxy,
+	}
+	scc.Data["json"] = response
+	scc.ServeJSON()
+	scc.StopRun()
+}
+
+func (gcc *GetConfigController) Get() {
+	//var conf entity.Config
+	//conf.GetConf()
+	conf, _:= comm.GetConfig()
+	response := &entity.TSNResponse{
+		Code: 200,
+		Msg:  "success",
+		TSN:  conf.TSN,
+		Mode:  conf.Mode,
+		Proxy:  conf.Proxy,
+	}
+	gcc.Data["json"] = response
+	gcc.ServeJSON()
+	gcc.StopRun()
+}
+
 func (giac *GetIpAddrController) Get() {
 	ipAddr := comm.GetLocalIP()
 	response := &entity.IPResponse{
-		CODE:	200,
-		MSG:	"success",
-		IP:	ipAddr,
+		Code: 200,
+		Msg:  "success",
+		IP:   ipAddr,
 	}
 	giac.Data["json"] = response
 	giac.ServeJSON()
