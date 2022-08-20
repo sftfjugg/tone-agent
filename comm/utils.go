@@ -78,7 +78,9 @@ func SetConfig(tsn string, mode string, proxy string) error{
 }
 
 func GetLog() string {
-	file, err := os.Open("./toneagent.log")
+	logFilePath := beego.AppConfig.String("LogFileDir")
+	logFileName := beego.AppConfig.String("LogFileName")
+	file, err := os.Open(fmt.Sprintf("%s/%s", logFilePath, logFileName))
 	if err != nil {
 		fmt.Println(err)
 		return ""

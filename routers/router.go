@@ -25,4 +25,8 @@ func init() {
 
 	// log
 	beego.Router("log/info", &controllers.GetLogController{})
+
+	// service
+	beego.Router("service/restart", &controllers.RestartServiceController{})
+	beego.Router("service/stop", &controllers.StopServiceController{})
 }

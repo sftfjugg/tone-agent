@@ -125,12 +125,15 @@ func heartbeatSchedule() error {
 	heartbeatAPI := core.GetProxyAPIUrl(entity.AgentAPIHeartbeat)
 	tsn := viper.GetString("tsn")
 	sign := core.GetSign()
+	arch, _ := core.ExecCommand("arch")
+	kernel, _ := core.ExecCommand("uname -r")
+	distro, _ := core.ExecCommand("cat /etc/os-release | grep -i id=")
 	data := map[string]string{
 		"tsn":    tsn,
 		"sign":   sign,
-		"arch":   core.ExecCommand("arch"),
-		"kernel": core.ExecCommand("uname -r"),
-		"distro": core.ExecCommand("cat /etc/os-release | grep -i id="),
+		"arch":   arch,
+		"kernel": kernel,
+		"distro": distro,
 	}
 	jsonData, _ := json.Marshal(data)
 	client := core.GetHttpClient()

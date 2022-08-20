@@ -1,5 +1,15 @@
 package entity
 
+type SuccessResponse struct {
+	Code  int    `json:"code"`
+	Msg   string `json:"msg"`
+}
+
+type ErrorResponse struct {
+	Code  string    `json:"code"`
+	Msg   string `json:"msg"`
+}
+
 type AgentResponse struct {
 	Tid        string `json:"TID"`
 	Success    string `json:"SUCCESS"`
@@ -34,9 +44,4 @@ type LogResponse struct {
 	Code  int    `json:"code"`
 	Msg   string `json:"msg"`
 	Log   string `json:"log"`
-}
-
-type ErrorResponse struct {
-	Code  string    `json:"code"`
-	Msg   string `json:"msg"`
 }

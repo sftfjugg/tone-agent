@@ -322,7 +322,7 @@ func ExecTask(task entity.Task) (string, string, string, string, string) {
 	return strconv.Itoa(taskPid), result, errorCode, errorMsg, exitCode
 }
 
-func ExecCommand(execCmd string) (string, ) {
+func ExecCommand(execCmd string) (string, string) {
 	var stdout, stderr bytes.Buffer
 	cmd := exec.Command("/bin/bash", "-c", execCmd)
 	cmd.Stdout = &stdout
@@ -331,7 +331,7 @@ func ExecCommand(execCmd string) (string, ) {
 	outStr, errStr := string(stdout.Bytes()), string(stderr.Bytes())
 	if err != nil {
 		log.Printf("[ExecCommand]cmd run failed: %s | detail:%s \n", err, errStr)
-		return ""
+		return "", errStr
 	}
-	return outStr
+	return outStr, ""
 }

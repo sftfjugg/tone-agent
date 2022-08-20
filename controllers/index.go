@@ -6,6 +6,7 @@ import (
 	"github.com/spf13/viper"
 	"strings"
 	"tone-agent/comm"
+	"tone-agent/core"
 	"tone-agent/entity"
 )
 
@@ -30,6 +31,14 @@ type GetIpAddrController struct {
 }
 
 type GetLogController struct {
+	beego.Controller
+}
+
+type RestartServiceController struct {
+	beego.Controller
+}
+
+type StopServiceController struct {
 	beego.Controller
 }
 
@@ -123,4 +132,46 @@ func (giac *GetIpAddrController) Get() {
 	giac.Data["json"] = response
 	giac.ServeJSON()
 	giac.StopRun()
+}
+
+func (rsc *RestartServiceController) Post() {
+	result, err := core.ExecCommand("systemctl restart toneagent")
+	if err != ""{
+		response := &entity.ErrorResponse{
+			Code: entity.ExecCmdErrorCode,
+			Msg:  err,
+		}
+		rsc.Data["json"] = response
+		rsc.ServeJSON()
+		rsc.StopRun()
+	}else{
+		response := &entity.SuccessResponse{
+			Code: entity.SuccessCode,
+			Msg:  result,
+		}
+		rsc.Data["json"] = response
+		rsc.ServeJSON()
+		rsc.StopRun()
+	}
+}
+
+func (ssc *StopServiceController) Post() {
+	result, err := core.ExecCommand("systemctl stop toneagent")
+	if err != ""{
+		response := &entity.ErrorResponse{
+			Code: entity.ExecCmdErrorCode,
+			Msg:  err,
+		}
+		ssc.Data["json"] = response
+		ssc.ServeJSON()
+		ssc.StopRun()
+	}else{
+		response := &entity.SuccessResponse{
+			Code: entity.SuccessCode,
+			Msg:  result,
+		}
+		ssc.Data["json"] = response
+		ssc.ServeJSON()
+		ssc.StopRun()
+	}
 }
