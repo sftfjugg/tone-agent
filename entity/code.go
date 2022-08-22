@@ -13,4 +13,6 @@ const (
 	PidNotExistErrorCode = "a-1003"
 	PidNotExistErrorMsg  = "task pid no longer exists"
 
+	SyncHeartbeatErrorCode = "b-1001"
+	SyncHeartbeatErrorMsg  = "sync heartbeat to proxy failed. Please check config of agent"
 )

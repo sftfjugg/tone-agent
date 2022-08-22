@@ -29,4 +29,7 @@ func init() {
 	// service
 	beego.Router("service/restart", &controllers.RestartServiceController{})
 	beego.Router("service/stop", &controllers.StopServiceController{})
+
+	// heartbeat
+	beego.Router("heartbeat/test", &controllers.SendHeartbeatController{})
 }

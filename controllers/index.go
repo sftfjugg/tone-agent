@@ -42,6 +42,10 @@ type StopServiceController struct {
 	beego.Controller
 }
 
+type SendHeartbeatController struct {
+	beego.Controller
+}
+
 func (c *MainController) Get() {
 	defer c.ServeJSON()
 	c.TplName = "index.html"
@@ -174,5 +178,26 @@ func (ssc *StopServiceController) Post() {
 		ssc.Data["json"] = response
 		ssc.ServeJSON()
 		ssc.StopRun()
+	}
+}
+
+func (shc *SendHeartbeatController) Post() {
+	err := core.SyncHeartbeatToProxy()
+	if err != ""{
+		response := &entity.ErrorResponse{
+			Code: entity.SyncHeartbeatErrorCode,
+			Msg:  err,
+		}
+		shc.Data["json"] = response
+		shc.ServeJSON()
+		shc.StopRun()
+	}else{
+		response := &entity.SuccessResponse{
+			Code: entity.SuccessCode,
+			Msg:  entity.SuccessMsg,
+		}
+		shc.Data["json"] = response
+		shc.ServeJSON()
+		shc.StopRun()
 	}
 }

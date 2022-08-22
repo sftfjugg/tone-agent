@@ -121,34 +121,9 @@ func revisedData() error {
 	return nil
 }
 
-func heartbeatSchedule() error {
-	heartbeatAPI := core.GetProxyAPIUrl(entity.AgentAPIHeartbeat)
-	tsn := viper.GetString("tsn")
-	sign := core.GetSign()
-	arch, _ := core.ExecCommand("arch")
-	kernel, _ := core.ExecCommand("uname -r")
-	distro, _ := core.ExecCommand("cat /etc/os-release | grep -i id=")
-	data := map[string]string{
-		"tsn":    tsn,
-		"sign":   sign,
-		"arch":   arch,
-		"kernel": kernel,
-		"distro": distro,
-	}
-	jsonData, _ := json.Marshal(data)
-	client := core.GetHttpClient()
-	resp, err := client.Post(heartbeatAPI, "application/json", bytes.NewBuffer(jsonData))
-
-	if err != nil {
-		log.Printf("[heartbeatSchedule]Hearbeat info sync error, url:%s | error:%s", heartbeatAPI, err.Error())
-		return err
-	}
-	result, _ := ioutil.ReadAll(resp.Body)
-	if resp.StatusCode != 200 {
-		log.Printf("[heartbeatSchedule]Hearbeat schedule request failed! StatusCode:%d | detail:%s",
-			resp.StatusCode, result)
-	}
-	defer resp.Body.Close()
+func heartbeatSchedule() error{
+	err := core.SyncHeartbeatToProxy()
+	log.Printf("[HeartbeatSchedule]sync hearbeat request result: %s", err)
 	return nil
 }
 

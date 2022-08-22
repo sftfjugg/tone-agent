@@ -3,6 +3,8 @@ package core
 import (
 	"bytes"
 	"encoding/json"
+	"github.com/spf13/viper"
+	"io/ioutil"
 	"log"
 	"time"
 	"tone-agent/entity"
@@ -124,4 +126,46 @@ func SyncResultToProxy(values map[string]string, sync bool, finish bool) bool {
 	}
 	defer resp.Body.Close()
 	return false
+}
+
+func SyncHeartbeatToProxy() string {
+	heartbeatAPI := GetProxyAPIUrl(entity.AgentAPIHeartbeat)
+	tsn := viper.GetString("tsn")
+	sign := GetSign()
+	arch, _ := ExecCommand("arch")
+	kernel, _ := ExecCommand("uname -r")
+	distro, _ := ExecCommand("cat /etc/os-release | grep -i id=")
+	data := map[string]string{
+		"tsn":    tsn,
+		"sign":   sign,
+		"arch":   arch,
+		"kernel": kernel,
+		"distro": distro,
+	}
+	jsonData, _ := json.Marshal(data)
+	client := GetHttpClient()
+	resp, err := client.Post(heartbeatAPI, "application/json", bytes.NewBuffer(jsonData))
+
+	if err != nil {
+		log.Printf("[HeartbeatSchedule]Hearbeat info sync error, url:%s | error:%s", heartbeatAPI, err.Error())
+		return err.Error()
+	}
+	result, _ := ioutil.ReadAll(resp.Body)
+	var resData map[string]interface{}
+	err = json.Unmarshal([]byte(result), &resData)
+	if err != nil{
+		return err.Error()
+	}
+	if resData["SUCCESS"] == "FALSE" {
+		errorMsg := resData["ERROR_MSG"]
+		log.Println(errorMsg)
+		return errorMsg.(string)
+	}
+	if resp.StatusCode != 200 {
+		log.Printf("[HeartbeatSchedule]Hearbeat schedule request failed! StatusCode:%d | detail:%s",
+			resp.StatusCode, result)
+		return err.Error()
+	}
+	defer resp.Body.Close()
+	return ""
 }
