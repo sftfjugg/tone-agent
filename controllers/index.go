@@ -43,6 +43,7 @@ type StopServiceController struct {
 }
 
 func (c *MainController) Get() {
+	defer c.ServeJSON()
 	c.TplName = "index.html"
 }
 

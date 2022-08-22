@@ -1,9 +1,8 @@
-/Applications/GoLand.app/Contents/plugins/go/lib/dlv/mac/dlv --listen=0.0.0.0:52552 --headless=true --api-version=2 --check-go-version=false --only-same-user=false exec /private/var/folders/zp/gzs9fj394k7bs26_8zwlsqpc0000gp/T/___go_build_main_go --
-API server listening at: [::]:52552
-debugserver-@(#)PROGRAM:LLDB  PROJECT:lldb-1200.0.32
- for x86_64.
-Got a connection, launched process /private/var/folders/zp/gzs9fj394k7bs26_8zwlsqpc0000gp/T/___go_build_main_go (pid = 85105).
-2022/08/16 18:55:22 Open log file failed! error: open /usr/local/toneagent/logs/toneagent.log: permission denied
-2022/08/16 18:55:22.622 [I] [asm_amd64.s:1374]  http server Running on http://0.0.0.0:8479
-[tone-agent]2022/08/16 18:56:00 [ExecCommand]cmd run failed: exit status 1 | detail:cat: /etc/os-release: No such file or directory
-
+[tone-agent]2022/08/22 12:25:47 server start...
+[tone-agent]2022/08/22 12:26:00 [ExecCommand]cmd run failed: exit status 1 | detail:cat: /etc/os-release: No such file or directory
+ 
+[tone-agent]2022/08/22 12:26:13 Configuration files have been changed, file: /Users/foo/tone/gitee/tone-agent/toneagent.config.yaml
+[tone-agent]2022/08/22 12:26:44 Configuration files have been changed, file: /Users/foo/tone/gitee/tone-agent/toneagent.config.yaml
+[tone-agent]2022/08/22 12:26:49 Configuration files have been changed, file: /Users/foo/tone/gitee/tone-agent/toneagent.config.yaml
+[tone-agent]2022/08/22 12:27:00 [ExecCommand]cmd run failed: exit status 1 | detail:cat: /etc/os-release: No such file or directory
+ 

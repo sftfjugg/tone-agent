@@ -29,8 +29,13 @@ func initConfig()  {
 	})
 }
 
-func initLog()  {
-	// log
+func main() {
+	initConfig()
+
+	schedule.InitTask()
+	toolbox.StartTask()
+	defer toolbox.StopTask()
+
 	logFileDir := beego.AppConfig.String("LogFileDir")
 	logFileName := beego.AppConfig.String("LogFileName")
 	logFilePath := fmt.Sprintf("%s/%s", logFileDir, logFileName)
@@ -44,18 +49,7 @@ func initLog()  {
 	log.SetOutput(mw)
 	log.SetPrefix("[tone-agent]")
 	log.SetFlags(log.Ldate | log.Ltime)
-}
-
-
-func main() {
-	initConfig()
-
-	schedule.InitTask()
-	toolbox.StartTask()
-	defer toolbox.StopTask()
-
-	initLog()
-
-	beego.SetStaticPath("/views","views/")
+	log.Println("server start...")
+	beego.SetStaticPath("/","views/")
 	beego.Run()
 }
