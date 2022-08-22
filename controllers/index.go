@@ -46,7 +46,7 @@ func (c *MainController) Get() {
 	c.TplName = "index.html"
 }
 
-func (gtc *GenerateTSNController) Get() {
+func (gtc *GenerateTSNController) Post() {
 	macAddrs := comm.GetMacAddrs()
 	macAddrStr := strings.Join(macAddrs, `|`)
 	macAddrEncrypt := comm.MD5Encrypt(macAddrStr, entity.AgentTSNSalt)

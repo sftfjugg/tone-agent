@@ -55,5 +55,7 @@ func main() {
 	defer toolbox.StopTask()
 
 	initLog()
+
+	beego.SetStaticPath("/views","views/")
 	beego.Run()
 }
