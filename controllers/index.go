@@ -46,6 +46,10 @@ type SendHeartbeatController struct {
 	beego.Controller
 }
 
+type RequestTestController struct {
+	beego.Controller
+}
+
 func (c *MainController) Get() {
 	defer c.ServeJSON()
 	c.TplName = "index.html"
@@ -199,5 +203,28 @@ func (shc *SendHeartbeatController) Post() {
 		shc.Data["json"] = response
 		shc.ServeJSON()
 		shc.StopRun()
+	}
+}
+
+func (rtc *RequestTestController) Get() {
+	client := core.GetHttpClient()
+	url := rtc.GetString("url")
+	resp, _ := client.Get(url)
+	if resp.StatusCode != 200 {
+		response := &entity.ErrorResponse{
+			Code: entity.RequestErrorCode,
+			Msg:  entity.RequestErrorMsg,
+		}
+		rtc.Data["json"] = response
+		rtc.ServeJSON()
+		rtc.StopRun()
+	}else{
+		response := &entity.SuccessResponse{
+			Code: entity.SuccessCode,
+			Msg:  entity.SuccessMsg,
+		}
+		rtc.Data["json"] = response
+		rtc.ServeJSON()
+		rtc.StopRun()
 	}
 }

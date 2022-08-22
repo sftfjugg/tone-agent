@@ -15,4 +15,7 @@ const (
 
 	SyncHeartbeatErrorCode = "b-1001"
 	SyncHeartbeatErrorMsg  = "sync heartbeat to proxy failed. Please check config of agent"
+
+	RequestErrorCode = "b-1002"
+	RequestErrorMsg  = "request url failed. Please check url of config"
 )
