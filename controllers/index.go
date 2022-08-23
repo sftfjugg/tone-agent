@@ -51,7 +51,7 @@ type RequestTestController struct {
 }
 
 func (c *MainController) Get() {
-	c.TplName = "index.tpl"
+	c.TplName = "index.html"
 	c.Render()
 }
 
@@ -209,8 +209,8 @@ func (shc *SendHeartbeatController) Post() {
 func (rtc *RequestTestController) Get() {
 	client := core.GetHttpClient()
 	url := rtc.GetString("url")
-	resp, _ := client.Get(url)
-	if resp.StatusCode != 200 {
+	resp, err := client.Get(url)
+	if err != nil || resp.StatusCode != 200 {
 		response := &entity.ErrorResponse{
 			Code: entity.RequestErrorCode,
 			Msg:  entity.RequestErrorMsg,
