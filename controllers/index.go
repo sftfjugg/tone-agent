@@ -51,7 +51,8 @@ type RequestTestController struct {
 }
 
 func (c *MainController) Get() {
-	c.TplName = "index.html"
+	c.TplName = "index.tpl"
+	c.Render()
 }
 
 func (gtc *GenerateTSNController) Post() {
