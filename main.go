@@ -50,6 +50,8 @@ func main() {
 	log.SetPrefix("[tone-agent]")
 	log.SetFlags(log.Ldate | log.Ltime)
 	log.Println("server start...")
-	beego.SetStaticPath("/","views/")
+
+	beego.SetStaticPath("/static","static")
+	beego.SetViewsPath("views")
 	beego.Run()
 }

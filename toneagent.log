@@ -1,8 +1,0 @@
-[tone-agent]2022/08/22 12:25:47 server start...
-[tone-agent]2022/08/22 12:26:00 [ExecCommand]cmd run failed: exit status 1 | detail:cat: /etc/os-release: No such file or directory
- 
-[tone-agent]2022/08/22 12:26:13 Configuration files have been changed, file: /Users/foo/tone/gitee/tone-agent/toneagent.config.yaml
-[tone-agent]2022/08/22 12:26:44 Configuration files have been changed, file: /Users/foo/tone/gitee/tone-agent/toneagent.config.yaml
-[tone-agent]2022/08/22 12:26:49 Configuration files have been changed, file: /Users/foo/tone/gitee/tone-agent/toneagent.config.yaml
-[tone-agent]2022/08/22 12:27:00 [ExecCommand]cmd run failed: exit status 1 | detail:cat: /etc/os-release: No such file or directory
- 
