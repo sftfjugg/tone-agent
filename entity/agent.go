@@ -7,3 +7,16 @@ const (
 
 	AgentTSNSalt = "tone-agent"
 )
+
+
+type Config struct {
+	TSN   string `json:"tsn"`
+	Mode  string `json:"mode"`
+	Proxy string `json:"proxy"`
+}
+
+type Server struct {
+	IP  string `json:"ip"`
+	TSN   string `json:"tsn"`
+	Domain   string `json:"domain"`
+}

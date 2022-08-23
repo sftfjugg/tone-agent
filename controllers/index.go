@@ -1,7 +1,9 @@
 package controllers
 
 import (
+	"bytes"
 	"encoding/json"
+	"fmt"
 	"github.com/astaxie/beego"
 	"github.com/spf13/viper"
 	"strings"
@@ -47,6 +49,10 @@ type SendHeartbeatController struct {
 }
 
 type RequestTestController struct {
+	beego.Controller
+}
+
+type AddServerController struct {
 	beego.Controller
 }
 
@@ -153,15 +159,14 @@ func (rsc *RestartServiceController) Post() {
 		rsc.Data["json"] = response
 		rsc.ServeJSON()
 		rsc.StopRun()
-	}else{
-		response := &entity.SuccessResponse{
-			Code: entity.SuccessCode,
-			Msg:  result,
-		}
-		rsc.Data["json"] = response
-		rsc.ServeJSON()
-		rsc.StopRun()
 	}
+	response := &entity.SuccessResponse{
+		Code: entity.SuccessCode,
+		Msg:  result,
+	}
+	rsc.Data["json"] = response
+	rsc.ServeJSON()
+	rsc.StopRun()
 }
 
 func (ssc *StopServiceController) Post() {
@@ -174,15 +179,14 @@ func (ssc *StopServiceController) Post() {
 		ssc.Data["json"] = response
 		ssc.ServeJSON()
 		ssc.StopRun()
-	}else{
-		response := &entity.SuccessResponse{
-			Code: entity.SuccessCode,
-			Msg:  result,
-		}
-		ssc.Data["json"] = response
-		ssc.ServeJSON()
-		ssc.StopRun()
 	}
+	response := &entity.SuccessResponse{
+		Code: entity.SuccessCode,
+		Msg:  result,
+	}
+	ssc.Data["json"] = response
+	ssc.ServeJSON()
+	ssc.StopRun()
 }
 
 func (shc *SendHeartbeatController) Post() {
@@ -195,15 +199,14 @@ func (shc *SendHeartbeatController) Post() {
 		shc.Data["json"] = response
 		shc.ServeJSON()
 		shc.StopRun()
-	}else{
-		response := &entity.SuccessResponse{
-			Code: entity.SuccessCode,
-			Msg:  entity.SuccessMsg,
-		}
-		shc.Data["json"] = response
-		shc.ServeJSON()
-		shc.StopRun()
 	}
+	response := &entity.SuccessResponse{
+		Code: entity.SuccessCode,
+		Msg:  entity.SuccessMsg,
+	}
+	shc.Data["json"] = response
+	shc.ServeJSON()
+	shc.StopRun()
 }
 
 func (rtc *RequestTestController) Get() {
@@ -218,13 +221,39 @@ func (rtc *RequestTestController) Get() {
 		rtc.Data["json"] = response
 		rtc.ServeJSON()
 		rtc.StopRun()
-	}else{
-		response := &entity.SuccessResponse{
-			Code: entity.SuccessCode,
-			Msg:  entity.SuccessMsg,
-		}
-		rtc.Data["json"] = response
-		rtc.ServeJSON()
-		rtc.StopRun()
 	}
+	response := &entity.SuccessResponse{
+		Code: entity.SuccessCode,
+		Msg:  entity.SuccessMsg,
+	}
+	rtc.Data["json"] = response
+	rtc.ServeJSON()
+	rtc.StopRun()
+}
+
+func (asc *AddServerController) Post() {
+	server := entity.Server{}
+	data := asc.Ctx.Input.RequestBody
+	_ = json.Unmarshal(data, &server)
+	client := core.GetHttpClient()
+	addServerURL := fmt.Sprintf("%s/server/add/", server.Domain)
+	requestData := map[string]string{"ip": server.IP, "tsn": server.TSN}
+	jsonData, _ := json.Marshal(requestData)
+	resp, err := client.Post(addServerURL, "application/json", bytes.NewBuffer(jsonData))
+	if err != nil || resp.StatusCode != 200{
+		response := &entity.ErrorResponse{
+			Code: entity.RequestErrorCode,
+			Msg:  entity.RequestErrorMsg,
+		}
+		asc.Data["json"] = response
+		asc.ServeJSON()
+		asc.StopRun()
+	}
+	response := &entity.SuccessResponse{
+		Code: entity.SuccessCode,
+		Msg:  entity.SuccessMsg,
+	}
+	asc.Data["json"] = response
+	asc.ServeJSON()
+	asc.StopRun()
 }

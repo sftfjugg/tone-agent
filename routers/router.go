@@ -33,4 +33,7 @@ func init() {
 	// heartbeat
 	beego.Router("heartbeat/test", &controllers.SendHeartbeatController{})
 	beego.Router("request/test", &controllers.RequestTestController{})
+
+	//
+	beego.Router("server/add", &controllers.AddServerController{})
 }
