@@ -93,7 +93,7 @@ func (scc *SetConfigController) Post() {
 	err := comm.SetConfig(
 			config.TSN,
 			config.Mode,
-			config.Proxy,
+		strings.Trim(config.Proxy, "/"),
 		)
 	if err != nil{
 		panic(err)
@@ -213,7 +213,7 @@ func (shc *SendHeartbeatController) Post() {
 
 func (rtc *RequestTestController) Get() {
 	client := core.GetHttpClient()
-	url := rtc.GetString("url")
+	url := strings.Trim(rtc.GetString("url"), "/")
 	resp, err := client.Get(url)
 	if err != nil || resp.StatusCode != 200 {
 		response := &entity.ErrorResponse{
@@ -238,7 +238,8 @@ func (asc *AddServerController) Post() {
 	data := asc.Ctx.Input.RequestBody
 	_ = json.Unmarshal(data, &server)
 	client := core.GetHttpClient()
-	addServerURL := fmt.Sprintf("%s/api/server/add/", server.Domain)
+	domain := strings.Trim(server.Domain, "/")
+	addServerURL := fmt.Sprintf("%s/api/server/add/", domain)
 	requestData := map[string]string{"ip": server.IP, "tsn": server.TSN}
 	jsonData, _ := json.Marshal(requestData)
 	resp, err := client.Post(addServerURL, "application/json", bytes.NewBuffer(jsonData))
