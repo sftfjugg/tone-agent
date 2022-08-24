@@ -49,7 +49,7 @@ func main() {
 	log.SetOutput(mw)
 	log.SetPrefix("[tone-agent]")
 	log.SetFlags(log.Ldate | log.Ltime)
-	log.Println("server start...")
+	log.Println("service started ...")
 
 	beego.SetStaticPath("/assets","views/assets")
 	beego.SetViewsPath("views")
