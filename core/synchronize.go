@@ -158,7 +158,6 @@ func SyncHeartbeatToProxy() string {
 	}
 	if resData["SUCCESS"] == "FALSE" {
 		errorMsg := resData["ERROR_MSG"]
-		log.Println(errorMsg)
 		return errorMsg.(string)
 	}
 	if resp.StatusCode != 200 {
