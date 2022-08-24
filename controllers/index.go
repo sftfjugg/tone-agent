@@ -7,6 +7,7 @@ import (
 	"github.com/astaxie/beego"
 	"github.com/spf13/viper"
 	"io/ioutil"
+	"log"
 	"strings"
 	"tone-agent/comm"
 	"tone-agent/core"
@@ -242,6 +243,8 @@ func (asc *AddServerController) Post() {
 	jsonData, _ := json.Marshal(requestData)
 	resp, err := client.Post(addServerURL, "application/json", bytes.NewBuffer(jsonData))
 	if err != nil || resp.StatusCode != 200{
+		log.Printf("[AddServerController] add server request err! url:%s | status:%d\n",
+			addServerURL, resp.StatusCode)
 		response := &entity.ErrorResponse{
 			Code: entity.RequestErrorCode,
 			Msg:  entity.RequestErrorMsg,
@@ -254,6 +257,8 @@ func (asc *AddServerController) Post() {
 	var resData map[string]interface{}
 	err = json.Unmarshal([]byte(result), &resData)
 	if err != nil{
+		log.Printf("[AddServerController] unmarshal data when add server! " +
+			"url:%s | error:%s", addServerURL, err)
 		response := &entity.ErrorResponse{
 			Code: entity.AddServerErrorCode,
 			Msg:  entity.AddServerErrorMsg,
@@ -262,10 +267,19 @@ func (asc *AddServerController) Post() {
 		asc.ServeJSON()
 		asc.StopRun()
 	}
-	if resData["msg"].(string) != "success"{
+	success, ok := resData["msg"].(string)
+	var errMsg string
+	if ok{
+		errMsg = resData["msg"].(string)
+	}else{
+		errMsg = entity.AddServerErrorMsg
+	}
+	if !ok || success != "success"{
+		log.Printf("[AddServerController] add server request data from tone err!" +
+			"url:%s | error:%s", addServerURL, resData)
 		response := &entity.ErrorResponse{
 			Code: entity.AddServerErrorCode,
-			Msg:  resData["msg"].(string),
+			Msg:  errMsg,
 		}
 		asc.Data["json"] = response
 		asc.ServeJSON()
