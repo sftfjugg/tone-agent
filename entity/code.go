@@ -18,4 +18,7 @@ const (
 
 	RequestErrorCode = "b-1002"
 	RequestErrorMsg  = "请求失败，请检查URL配置"
+
+	AddServerErrorCode = "b-1003"
+	AddServerErrorMsg  = "注册机器失败"
 )

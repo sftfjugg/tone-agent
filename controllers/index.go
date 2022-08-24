@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"github.com/astaxie/beego"
 	"github.com/spf13/viper"
+	"io/ioutil"
 	"strings"
 	"tone-agent/comm"
 	"tone-agent/core"
@@ -236,7 +237,7 @@ func (asc *AddServerController) Post() {
 	data := asc.Ctx.Input.RequestBody
 	_ = json.Unmarshal(data, &server)
 	client := core.GetHttpClient()
-	addServerURL := fmt.Sprintf("%s/server/add/", server.Domain)
+	addServerURL := fmt.Sprintf("%s/api/server/add/", server.Domain)
 	requestData := map[string]string{"ip": server.IP, "tsn": server.TSN}
 	jsonData, _ := json.Marshal(requestData)
 	resp, err := client.Post(addServerURL, "application/json", bytes.NewBuffer(jsonData))
@@ -244,6 +245,27 @@ func (asc *AddServerController) Post() {
 		response := &entity.ErrorResponse{
 			Code: entity.RequestErrorCode,
 			Msg:  entity.RequestErrorMsg,
+		}
+		asc.Data["json"] = response
+		asc.ServeJSON()
+		asc.StopRun()
+	}
+	result, _ := ioutil.ReadAll(resp.Body)
+	var resData map[string]interface{}
+	err = json.Unmarshal([]byte(result), &resData)
+	if err != nil{
+		response := &entity.ErrorResponse{
+			Code: entity.AddServerErrorCode,
+			Msg:  entity.AddServerErrorMsg,
+		}
+		asc.Data["json"] = response
+		asc.ServeJSON()
+		asc.StopRun()
+	}
+	if resData["msg"].(string) != "success"{
+		response := &entity.ErrorResponse{
+			Code: entity.AddServerErrorCode,
+			Msg:  resData["msg"].(string),
 		}
 		asc.Data["json"] = response
 		asc.ServeJSON()
