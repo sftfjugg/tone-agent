@@ -2,3 +2,5 @@
 .idea/
 
 tone-agent
+toneagent.config.yaml
+toneagent.log

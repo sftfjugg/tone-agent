@@ -51,7 +51,7 @@ func main() {
 	log.SetFlags(log.Ldate | log.Ltime)
 	log.Println("server start...")
 
-	beego.SetStaticPath("/static","static")
+	beego.SetStaticPath("/assets","views/assets")
 	beego.SetViewsPath("views")
 	beego.Run()
 }
