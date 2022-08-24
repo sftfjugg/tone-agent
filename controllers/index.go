@@ -65,8 +65,9 @@ func (c *MainController) Get() {
 
 func (gtc *GenerateTSNController) Post() {
 	macAddrs := comm.GetMacAddrs()
-	macAddrStr := strings.Join(macAddrs, `|`)
-	macAddrEncrypt := comm.MD5Encrypt(macAddrStr, entity.AgentTSNSalt)
+	macAddr := macAddrs[0]
+	//macAddrStr := strings.Join(macAddrs, `|`)
+	macAddrEncrypt := comm.MD5Encrypt(macAddr, entity.AgentTSNSalt)
 	response := &entity.TSNResponse{
 		Code: entity.SuccessCode,
 		Msg:  entity.SuccessMsg,

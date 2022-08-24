@@ -329,7 +329,7 @@ func ExecCommand(execCmd string) (string, string) {
 	cmd.Stderr = &stderr
 	err := cmd.Run()
 	outStr, errStr := string(stdout.Bytes()), string(stderr.Bytes())
-	if err != nil {
+	if errStr != "" {
 		log.Printf("[ExecCommand]cmd run failed: %s | detail:%s \n", err, errStr)
 		return "", errStr
 	}

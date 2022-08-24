@@ -100,7 +100,6 @@ func GetLog() string {
 		fmt.Println(err)
 		return ""
 	}
-	//fmt.Println("bytes read: ", bytesread)
 	log := string(buffer)
 	logLimit := 100000
 	if len(log) < logLimit{
