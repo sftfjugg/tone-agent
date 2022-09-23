@@ -95,6 +95,8 @@ func (scc *SetConfigController) Post() {
 			config.TSN,
 			config.Mode,
 			strings.Trim(strings.Trim(config.Proxy, " "), "/"),
+			strings.Trim(strings.Trim(config.ToneProxy, " "), "/"),
+			strings.Trim(strings.Trim(config.TestLibProxy, " "), "/"),
 		)
 	if err != nil{
 		panic(err)
@@ -106,6 +108,8 @@ func (scc *SetConfigController) Post() {
 			TSN:  viper.GetString("tsn"),
 			Mode:  viper.GetString("mode"),
 			Proxy:  viper.GetString("proxy"),
+			ToneProxy:  viper.GetString("tone-proxy"),
+			TestLibProxy:  viper.GetString("testlib-proxy"),
 		},
 	}
 	scc.Data["json"] = response
@@ -121,6 +125,8 @@ func (gcc *GetConfigController) Get() {
 			TSN:  viper.GetString("tsn"),
 			Mode:  viper.GetString("mode"),
 			Proxy:  viper.GetString("proxy"),
+			ToneProxy:  viper.GetString("tone-proxy"),
+			TestLibProxy:  viper.GetString("testlib-proxy"),
 		},
 	}
 	gcc.Data["json"] = response

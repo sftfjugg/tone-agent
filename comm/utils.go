@@ -55,7 +55,10 @@ func GetLocalIP() (ip string) {
 	return
 }
 
-func SetConfig(tsn string, mode string, proxy string) error{
+func SetConfig(
+		tsn string, mode string, proxy string,
+		tone_proxy string, testlib_proxy string,
+	) error{
 	var configViper = viper.New()
 	configViper.AddConfigPath(".")
 	configViper.AddConfigPath(beego.AppConfig.String("AgentConfigFilePath"))
@@ -70,9 +73,17 @@ func SetConfig(tsn string, mode string, proxy string) error{
 	if proxy == ""{
 		proxy = viper.GetString("proxy")
 	}
+	if tone_proxy == ""{
+		tone_proxy = viper.GetString("tone-proxy")
+	}
+	if testlib_proxy == ""{
+		testlib_proxy = viper.GetString("testlib-proxy")
+	}
 	configViper.Set("tsn", tsn)
 	configViper.Set("mode", mode)
 	configViper.Set("proxy", proxy)
+	configViper.Set("tone-proxy", tone_proxy)
+	configViper.Set("testlib-proxy", testlib_proxy)
 	configViper.WriteConfig()
 	return nil
 }
