@@ -3,11 +3,11 @@
 [![](https://img.shields.io/badge/made%20by-openanolis-blue.svg?style=flat-square)](https://openanolis.cn/)
 [![standard-readme compliant](https://img.shields.io/badge/standard--readme-OK-green.svg?style=flat-square)](https://github.com/RichardLitt/standard-readme)
 
-> ToneAgent是T-One运行用例的物理机器代理
+> ToneAgent 是 T-One 运行用例的物理机器代理
 
-ToneAgent实现了多台机器和T-One之间的通讯, 保证T-One中用例的分布式执行, 提高执行效率。
+ToneAgent 实现了多台机器和 T-One 之间的通讯, 保证 T-One 中用例的分布式执行, 提高执行效率。
 
-通过ToneAgent, T-One可以向多台物理机/虚拟机分配待执行状态的用例。当用例完成后, T-One会将不同机器的执行结果进行汇总, 并将结果展示在T-One平台上。
+通过 ToneAgent, T-One 可以向多台物理机/虚拟机分配待执行状态的用例。当用例完成后, T-One 会将不同机器的执行结果进行汇总, 并将结果展示在 T-One 平台上。
 
 ## 安装说明
 
