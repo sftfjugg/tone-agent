@@ -150,11 +150,11 @@ func heartbeatSchedule() error{
 
 
 func InitTask()  {
-	rd := toolbox.NewTask("revisedData", "0/60 * * * * *", revisedData)
+	rd := toolbox.NewTask("revisedData", beego.AppConfig.String("RevisedDataInterval"), revisedData)
 	if viper.Get("mode") == "active" {
-		pt := toolbox.NewTask("pullTask", "0/1 * * * * *", pullTaskSchedule)
-		sr := toolbox.NewTask("syncResult", "0/1 * * * * *", syncResultSchedule)
-		hb := toolbox.NewTask("heartbeat", "0/60 * * * * *", heartbeatSchedule)
+		pt := toolbox.NewTask("pullTask", beego.AppConfig.String("SyncResultInterval"), pullTaskSchedule)
+		sr := toolbox.NewTask("syncResult", beego.AppConfig.String("PullTaskInterval"), syncResultSchedule)
+		hb := toolbox.NewTask("heartbeat", beego.AppConfig.String("HeartbeatInterval"), heartbeatSchedule)
 		toolbox.AddTask("pullTask", pt)
 		toolbox.AddTask("syncResult", sr)
 		toolbox.AddTask("heartbeat", hb)

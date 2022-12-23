@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+	"os/exec"
 	"path"
 )
 
@@ -40,7 +41,9 @@ func MoveFilePath(filefullname string) {
 	filename := path.Base(filefullname)
 	resultFileDir := beego.AppConfig.String("ResultFileDir")
 	newfilefullname := fmt.Sprintf("%s/%s", resultFileDir, filename)
-	err := os.Rename(filefullname, newfilefullname)
+	var cmd *exec.Cmd
+	cmd = exec.Command("mv", filefullname, newfilefullname)
+	_, err := cmd.Output()
 	if err != nil {
 		log.Printf(
 			"[MoveFile]move file faild! file:%s, newfile:%s, error:%s",
