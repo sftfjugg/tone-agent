@@ -1,0 +1,4 @@
+https://anolis-service-pub.oss-cn-zhangjiakou.aliyuncs.com/biz-resource/tone/rpms/toneagent-1.0.3-x86_64.deb
+https://anolis-service-pub.oss-cn-zhangjiakou.aliyuncs.com/biz-resource/tone/rpms/toneagent-1.0.3-aarch64.deb
+https://anolis-service-pub.oss-cn-zhangjiakou.aliyuncs.com/biz-resource/tone/rpms/toneagent-1.0.3-1.an8.x86_64.rpm
+https://anolis-service-pub.oss-cn-zhangjiakou.aliyuncs.com/biz-resource/tone/rpms/toneagent-1.0.3-1.an8.aarch64.rpm
