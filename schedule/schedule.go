@@ -141,7 +141,10 @@ func heartbeatSchedule() error{
 	}
 	result, _ := ioutil.ReadAll(resp.Body)
 	if resp.StatusCode != 200{
-		log.Printf("[heartbeatSchedule]Hearbeat schedule request failed! StatusCode:%d | detail:%s",
+		log.Printf("[heartbeatSchedule]Heartbeat request send failed! StatusCode:%d | detail:%s",
+			resp.StatusCode, result)
+	}else{
+		log.Printf("[heartbeatSchedule]Heartbeat request send success! StatusCode:%d | detail:%s",
 			resp.StatusCode, result)
 	}
 	defer resp.Body.Close()
