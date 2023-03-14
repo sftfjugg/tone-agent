@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"log"
 	"time"
 )
@@ -15,6 +16,7 @@ func SyncStatusToProxy(tid string, status string) bool {
 	jsonValue, _ := json.Marshal(values)
 	client := GetHttpClient()
 	resp, err := client.Post(syncUrl, "application/json", bytes.NewBuffer(jsonValue))
+	defer resp.Body.Close()
 	if err != nil {
 		log.Printf(
 			"[SyncStatusToProxy]"+
@@ -32,7 +34,6 @@ func SyncStatusToProxy(tid string, status string) bool {
 			tid,
 			status,
 		)
-		defer resp.Body.Close()
 		return true
 	} else {
 		log.Printf(
@@ -41,7 +42,6 @@ func SyncStatusToProxy(tid string, status string) bool {
 			tid,
 			resp.StatusCode,
 		)
-		defer resp.Body.Close()
 		return false
 	}
 }
@@ -58,6 +58,7 @@ func SyncExecTimeToProxy(tid string, timeType string, pid string) bool {
 	jsonValue, _ := json.Marshal(values)
 	client := GetHttpClient()
 	resp, err := client.Post(syncUrl, "application/json", bytes.NewBuffer(jsonValue))
+	defer resp.Body.Close()
 	if err != nil {
 		log.Printf(
 			"[SyncExecTimeToProxy]"+
@@ -75,7 +76,6 @@ func SyncExecTimeToProxy(tid string, timeType string, pid string) bool {
 			tid,
 			timeType,
 		)
-		defer resp.Body.Close()
 		return true
 	} else {
 		log.Printf(
@@ -83,7 +83,6 @@ func SyncExecTimeToProxy(tid string, timeType string, pid string) bool {
 			tid,
 			resp.StatusCode,
 		)
-		defer resp.Body.Close()
 	}
 	return false
 }
@@ -95,6 +94,7 @@ func SyncResultToProxy(values map[string]string, sync bool, finish bool) bool {
 	jsonValue, _ := json.Marshal(values)
 	client := GetHttpClient()
 	resp, err := client.Post(syncUrl, "application/json", bytes.NewBuffer(jsonValue))
+	defer resp.Body.Close()
 	if err != nil {
 		log.Printf(
 			"[SyncResultToProxy]sync result to proxy error, tid:%s | error:%s",
@@ -105,16 +105,29 @@ func SyncResultToProxy(values map[string]string, sync bool, finish bool) bool {
 	}
 	if resp.StatusCode == 200 {
 		if !sync && finish {
-			filename := GetFileNameByTid(tid)
-			ReMoveFile(filename)
+			// SUCCESS 为 "ok" 时同步成功，为 "fail" 时同步失败
+			var res map[string]interface{}
+			body, _ := ioutil.ReadAll(resp.Body)
+			err = json.Unmarshal(body, &res)
+			if res["SUCCESS"] == "ok" {
+				filename := GetFileNameByTid(tid)
+				ReMoveFile(filename)
+				log.Printf(
+					"[SyncResultToProxy]sync result to proxy success, tid:%s | result:%s",
+					tid,
+					res,
+				)
+				return true
+			} else {
+				log.Printf(
+					"[SyncResultToProxy]sync result to proxy failed, tid:%s | result:%s",
+					tid,
+					res,
+				)
+				return false
+			}
+
 		}
-		log.Printf(
-			"[SyncResultToProxy]sync result to proxy success, tid:%s | status:%s",
-			tid,
-			values["status"],
-		)
-		defer resp.Body.Close()
-		return true
 	} else {
 		log.Printf(
 			"[SyncResultToProxy]"+
@@ -123,6 +136,5 @@ func SyncResultToProxy(values map[string]string, sync bool, finish bool) bool {
 			resp.StatusCode,
 		)
 	}
-	defer resp.Body.Close()
 	return false
 }

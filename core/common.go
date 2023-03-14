@@ -53,10 +53,10 @@ func GetHttpClient() *http.Client {
 	tr := &http.Transport{
 		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
 	}
-	timeout, _:= beego.AppConfig.Int64("	HttpRequestTimeout")
+	timeout, _ := beego.AppConfig.Int64("HttpRequestTimeout")
 	client := &http.Client{
 		Transport: tr,
-		Timeout: time.Duration(timeout) * time.Second,
+		Timeout:   time.Duration(timeout) * time.Second,
 	}
 	return client
 }

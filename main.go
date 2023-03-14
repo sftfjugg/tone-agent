@@ -15,7 +15,6 @@ import (
 	"tone-agent/schedule"
 )
 
-
 func main() {
 	viper.SetConfigType("yaml")
 	viper.SetConfigName("toneagent.config.yaml")
@@ -33,19 +32,19 @@ func main() {
 	// make dir
 	resultFileDir := beego.AppConfig.String("ResultFileDir")
 	waitingSyncDir := beego.AppConfig.String("WaitingSyncResultDir")
-	if !core.CheckFileIsExist(resultFileDir){
+	if !core.CheckFileIsExist(resultFileDir) {
 		core.MakeDir(resultFileDir)
 	}
-	if !core.CheckFileIsExist(waitingSyncDir){
+	if !core.CheckFileIsExist(waitingSyncDir) {
 		core.MakeDir(waitingSyncDir)
 	}
 	tmpScriptDir := beego.AppConfig.String("TmpScriptFileDir")
-	if !core.CheckFileIsExist(tmpScriptDir){
+	if !core.CheckFileIsExist(tmpScriptDir) {
 		core.MakeDir(tmpScriptDir)
 	}
 
 	logFileDir := beego.AppConfig.String("LogFileDir")
-	if !core.CheckFileIsExist(logFileDir){
+	if !core.CheckFileIsExist(logFileDir) {
 		core.MakeDir(logFileDir)
 	}
 	logFileName := beego.AppConfig.String("LogFileName")
@@ -57,16 +56,17 @@ func main() {
 	defer toolbox.StopTask()
 
 	// log
-	logFile, err := os.OpenFile(logFilePath, os.O_CREATE | os.O_APPEND | os.O_RDWR, 0666)
+	logFile, err := os.OpenFile(logFilePath, os.O_CREATE|os.O_APPEND|os.O_RDWR, 0666)
 	if err != nil {
 		log.Printf("Open log file failed! error: %s", err)
 	}
 	defer logFile.Close()
-	mw := io.MultiWriter(os.Stdout,logFile)
+	mw := io.MultiWriter(os.Stdout, logFile)
 	log.SetOutput(mw)
 	log.SetPrefix("[tone-agent]")
-	log.SetFlags(log.Ldate|log.Ltime)
+	log.SetFlags(log.Ldate | log.Ltime)
 	//beego.BConfig.CopyRequestBody = true
+	beego.BConfig.Listen.EnableAdmin = false
 	// router
 	beego.Router("api/task", &controllers.TaskController{})
 	beego.Router("api/query", &controllers.ResultController{})
