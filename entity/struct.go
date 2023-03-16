@@ -1,4 +1,4 @@
-package constant
+package entity
 
 type Task struct {
 	Tid        string `json:"TID"`
@@ -11,12 +11,7 @@ type Task struct {
 	Sync       bool   `json:"SYNC"`
 }
 
-type TaskResult struct {
+type PullTaskRes struct {
 	Success string `json:"SUCCESS"`
 	Tasks   []Task `json:"TASKS"`
 }
-
-const (
-	TaskRunningStatus   = "running"
-	TaskCompletedStatus = "completed"
-)

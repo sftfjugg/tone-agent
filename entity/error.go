@@ -1,4 +1,4 @@
-package constant
+package entity
 
 const (
 	ParamsErrorCode = "a-1001"
@@ -9,4 +9,7 @@ const (
 
 	PidNotExistErrorCode = "a-1003"
 	PidNotExistErrorMsg  = "task pid no longer exists"
+
+	ResultNotExistErrorCode = "a-1004"
+	ResultNotExistErrorMsg  = "results file not exists"
 )

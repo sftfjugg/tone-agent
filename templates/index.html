@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <style>
+      *,
+      *:before,
+      *:after{
+        padding: 0;
+        margin: 0;
+        box-sizing: border-box;
+      }
+      body{
+        background-color: #080710;
+      }
+      .background{
+        width: 430px;
+        height: 520px;
+        position: absolute;
+        transform: translate(-50%,-50%);
+        left: 50%;
+        top: 50%;
+      }
+      .background .shape{
+        height: 200px;
+        width: 200px;
+        position: absolute;
+        border-radius: 50%;
+      }
+      .shape:first-child{
+        background: linear-gradient(
+                #1845ad,
+                #23a2f6
+        );
+        left: -80px;
+        top: -80px;
+      }
+      .shape:last-child{
+        background: linear-gradient(
+                to right,
+                #ff512f,
+                #f09819
+        );
+        right: -30px;
+        bottom: -80px;
+      }
+      form{
+        height: 520px;
+        width: 400px;
+        background-color: rgba(255,255,255,0.13);
+        position: absolute;
+        transform: translate(-50%,-50%);
+        top: 50%;
+        left: 50%;
+        border-radius: 10px;
+        backdrop-filter: blur(10px);
+        border: 2px solid rgba(255,255,255,0.1);
+        box-shadow: 0 0 40px rgba(8,7,16,0.6);
+        padding: 20px 35px;
+      }
+      form *{
+        font-family: 'Poppins',sans-serif;
+        color: #ffffff;
+        letter-spacing: 0.5px;
+        outline: none;
+        border: none;
+      }
+      form h3{
+        font-size: 32px;
+        font-weight: 500;
+        line-height: 42px;
+        text-align: center;
+      }
+      label{
+        display: block;
+        margin-top: 30px;
+        font-size: 16px;
+        font-weight: 500;
+      }
+      input{
+        display: block;
+        height: 50px;
+        width: 100%;
+        background-color: rgba(255,255,255,0.07);
+        border-radius: 3px;
+        padding: 0 10px;
+        margin-top: 8px;
+        font-size: 14px;
+        font-weight: 300;
+      }
+      ::placeholder{
+        color: #e5e5e5;
+      }
+      button{
+        margin-top: 50px;
+        width: 100%;
+        background-color: #ffffff;
+        color: #080710;
+        padding: 15px 0;
+        font-size: 18px;
+        font-weight: 600;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+  <body>
+    <div class="background">
+      <div class="shape"></div>
+      <div class="shape"></div>
+    </div>
+
+    <form>
+      <h3>ToneAgent 配置</h3>
+      <label for="mode">MODE</label>
+      <input type="text" value="{{ .mode }}" id="mode">
+
+      <label for="tsn">TSN</label>
+      <input type="tsn" value="{{ .tsn }}" id="tsn">
+
+      <label for="proxy">PROXY</label>
+      <input type="proxy" value="{{ .proxy }}" id="proxy">
+
+      <button onclick="ContactSubmit()">保存</button>
+    </form>
+
+  <script>
+    function ContactSubmit() {
+      let mode= $("#mode").val();
+      let tsn= $("#tsn").val();
+      let proxy= $("#proxy").val();
+      let flag = confirm('确认修改？');
+      if(flag) {
+        $.ajax({
+          type: 'POST',
+          url: '/config',
+          contentType: 'application/json',
+          dataType: 'json',
+          data: JSON.stringify({
+            "mode": mode,
+            "tsn": tsn,
+            "proxy": proxy,
+          }),
+          success: function (data) {
+            if (data['msg'] === 'ok') {
+              alert("修改成功")
+            } else {
+              alert('修改失败（' + data['msg'] + ')')
+            }
+          }
+        })
+      }
+    }
+
+      // let name= $("#mode").val();
+      // console.log(name)
+      // let email = $("#tsn").val();
+      // let phoneNumber= $("#proxy").val();
+      // let flag = confirm('确认上传？');
+      // // if(flag){
+      // //   $.ajax({
+      // //     type: 'POST',
+      // //     url: 'http://127.0.0.1:8479/config',
+      // //     contentType:'application/json',
+      // //     dataType:'json',
+      // //     data: JSON.stringify({
+      // //       "Name": name,
+      // //       "Content": content,
+      // //       "Email": email,
+      // //       "PhoneNumber": phoneNumber,
+      // //     }),
+      // //     success: function (data) {
+      // //       if (data['msg'] === "ok") {
+      // //         alert("提交成功")
+      // //       } else {
+      // //         alert(data['msg'])
+      // //       }
+      // //     }
+      // //   })
+      // // }
+    // }
+  </script>
+  </body>
+</html>
